@@ -6,9 +6,9 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/14 18:27:05 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:35:41 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/token.h"
 

@@ -6,11 +6,12 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/14 19:16:32 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 19:13:25 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
+#include "../include/token.h"
 
 int main(void)
 {
@@ -19,7 +20,6 @@ int main(void)
 	int i;
 	
 	i = 0;
-	//enquanto o shell estiver rodando
 	while (1)
 	{
 		line = readline("TBShell>");
