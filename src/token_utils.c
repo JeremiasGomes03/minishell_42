@@ -6,11 +6,11 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/17 19:11:13 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 19:23:24 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/token.h"
+#include "../include/minishell.h"
 
 int is_space (char c)
 {

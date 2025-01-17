@@ -6,7 +6,7 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:43:24 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/17 18:54:11 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/17 19:22:36 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,5 @@ void	free_token(t_token *token);
 void free_all_tokens(t_tokenizer *tokenizer);
 t_token	*create_token(char *value, t_token_type type);
 t_token	*add_token(t_token *tokens, char *value, t_token_type type);
-
 
 #endif
