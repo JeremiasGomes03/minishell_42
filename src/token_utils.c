@@ -6,11 +6,12 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/17 19:23:24 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/20 18:34:02 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include "../include/token.h"
 
 int is_space (char c)
 {
@@ -24,15 +25,15 @@ int is_quote (char c)
 
 int is_operator (char c)
 {
-	return (c == '\'' || c == '\"');
-}
-
-int is_special_char (char c)
-{
     return (c == '|' || c == '<' || c == '>' ||
             c == '\'' || c == '"' ||
             c == '$' || c == '\\' ||
-            c == '#' || c == '~');
+            c == '#' || c == '~' || c == '\"');
+}
+
+int is_regular_char(char c)
+{
+    return !is_space(c) && !is_operator(c) && !is_quote(c);
 }
 
 t_token *create_token(char *value, t_token_type type) 
@@ -52,7 +53,6 @@ t_token *create_token(char *value, t_token_type type)
     new_token->next = NULL;
     return (new_token);
 }
-
 
 t_token *add_token(t_token *tokens, char *value, t_token_type type)
 {
