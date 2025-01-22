@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/22 18:03:41 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/01/22 18:09:48 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,66 @@ t_tokenizer *tokenization_loop(char *input) {
         tokenizer->tokens = add_token(tokenizer->tokens, current_token, TOKEN_WORD);
     }
     return tokenizer;
+}
+
+t_token *create_token(char *value, t_token_type type) 
+{
+    t_token *new_token;
+    
+    if (!value)
+        return NULL;
+        
+    new_token = malloc(sizeof(t_token));
+    if (!new_token)
+        return NULL;
+    new_token->value = ft_strdup(value);
+    if (!new_token->value)
+    {
+        free(new_token);
+        return (NULL);
+    }
+    new_token->type = type;
+    new_token->next = NULL;
+    return (new_token);
+}
+
+t_token *add_token(t_token *tokens, char *value, t_token_type type)
+{
+    t_token *new_token;
+    t_token *current;
+
+    if (!value)
+        return tokens;
+        
+    new_token = create_token(value, type);
+    if (!new_token) {
+        return tokens;
+    }
+    if (!tokens) {
+        return new_token;
+    }
+    current = tokens;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = new_token;
+    return tokens;
+}
+
+void free_all_tokens(t_tokenizer *tokenizer) 
+{
+    t_token *current;
+    t_token *next;
+
+    if (!tokenizer || !tokenizer->tokens)
+        return;     
+    if (tokenizer->input)
+        free(tokenizer->input);    
+    current = tokenizer->tokens;
+    while (current) {
+        next = current->next;
+        free_token(current);
+        current = next;
+    }
+    tokenizer->tokens = NULL;
 }
