@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:43:24 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/22 16:43:02 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/01/22 17:50:53 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ t_token	*create_token(char *value, t_token_type type);
 t_token	*add_token(t_token *tokens, char *value, t_token_type type);
 t_tokenizer  *init_tokenizer(char *input);
 t_tokenizer  *tokenization_loop(char *input);
-void handle_quoted_content(const char *input, int *i);
+void handle_quoted_content(const char *input, int *i, char *current_token, int *token_length, char *current_quote);
 void handle_space(t_tokenizer *tokenizer, char *current_token, int *token_length);
-void handle_operator(t_tokenizer *tokenizer);
+void handle_operator(t_tokenizer *tokenizer, int *i);
 void handle_regular_char(t_tokenizer *tokenizer);
 int is_regular_char(char c);
 void add_to_current_token(char c);
