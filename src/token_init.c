@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/20 19:45:53 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:50:19 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,31 +35,33 @@ t_tokenizer  *init_tokenizer(char *input)
 
 t_tokenizer  *tokenization_loop(char *input)
 {
-	int	i;
-	t_tokenizer tokenizer = {input, 0, 0, NULL};
+    t_tokenizer *tokenizer;
+    int i;
     char current_token[256] = {0};
     int token_length = 0;
-	
-	
-	i = 0;
-	if (token_length > 0)
-	{
-        current_token[token_length] = '\0';
-        tokenizer.tokens = add_token(tokenizer.tokens, current_token, TOKEN_WORD);
+    
+    tokenizer = init_tokenizer(input);
+    if (!tokenizer)
+        return NULL;
+    i = 0;
+    while (input[i] != '\0')
+    {
+        if (is_quote(input[i]))
+            handle_quoted_content(input, &i);
+        else if (is_space(input[i]))
+            handle_space(tokenizer, current_token, &token_length);
+        else if (is_operator(input[i]))
+            handle_operator(tokenizer);
+        else if (is_regular_char(input[i]))
+            handle_regular_char(tokenizer);
+        i++;
     }
-	while (input[i] != '\0')
-	{
-		if (is_quote(input[i]))
-			handle_quoted_content(input, &i);
-		else if (is_space(input[i]))
-			handle_space(&tokenizer, current_token, &token_length);
-		else if (is_operator(input[i]))
-			handle_operator(&tokenizer);
-		else if (is_regular_char(input[i]))
-			handle_regular_char(&tokenizer);
-		i++;
-	}
-	return (NULL);
+    if (token_length > 0)
+    {
+        current_token[token_length] = '\0';
+        tokenizer->tokens = add_token(tokenizer->tokens, current_token, TOKEN_WORD);
+    }
+    return tokenizer;
 }
 
 bool matching_quote(char c)
