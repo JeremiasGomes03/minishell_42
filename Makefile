@@ -1,9 +1,9 @@
 NAME = minishell
 
 SRCS = src/main.c \
-		src/token_init.c \
-		src/token_utils.c \
-		src/token_handles.c \
+		src/tokenization/token_init.c \
+		src/tokenization/token_utils.c \
+		src/tokenization/token_handles.c \
 
 OBJS = $(SRCS:.c=.o)
 
@@ -25,7 +25,7 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf src/*.o
+	@rm -rf $(OBJS)
 	@$(MAKE) clean -C $(LIBFT_DIR)
 
 fclean: clean

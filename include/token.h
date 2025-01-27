@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:43:24 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/22 17:50:53 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:31:53 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,33 @@
 
 # define TOKEN_H
 
-#include <stdio.h>
-#include <stdbool.h>
+# include <stdio.h>
+# include <stdbool.h>
 # include "../lib/libft/libft.h"
 
 typedef enum e_token_type
 {
-    TOKEN_WORD,      // Palavras normais e argumentos
-    TOKEN_PIPE,      // |
-    TOKEN_REDIR_IN,  // <
-    TOKEN_REDIR_OUT, // >
-    TOKEN_APPEND,    // >>
-    TOKEN_QUOTE,     // Conteúdo entre aspas simples
-    TOKEN_DQUOTE     // Conteúdo entre aspas duplas
+	TOKEN_WORD, // Palavras normais e argumentos
+	TOKEN_PIPE, // |
+	TOKEN_REDIR_IN, // <
+	TOKEN_REDIR_OUT, // >
+	TOKEN_APPEND, // >>
+	TOKEN_QUOTE, // Conteúdo entre aspas simples
+	TOKEN_DQUOTE // Conteúdo entre aspas duplas
 } t_token_type;
 
 typedef struct s_token
 {
-    char            *value;
-    t_token_type    type;
-    struct s_token  *next;
+	char            *value;
+	t_token_type    type;
+	struct s_token  *next;
 } t_token;
 
 typedef struct s_tokenizer {
-    char    *input;     // string a ser processada
-    int     position;   // posição atual
-    int     quote_state; // estado das aspas
-    t_token *tokens;    // lista de tokens
+	char    *input;     // string a ser processada
+	int     position;   // posição atual
+	int     quote_state; // estado das aspas
+	t_token *tokens;    // lista de tokens
 } t_tokenizer;
 
 int		is_space(char c);
@@ -55,7 +55,7 @@ t_tokenizer  *tokenization_loop(char *input);
 void handle_quoted_content(const char *input, int *i, char *current_token, int *token_length, char *current_quote);
 void handle_space(t_tokenizer *tokenizer, char *current_token, int *token_length);
 void handle_operator(t_tokenizer *tokenizer, int *i);
-void handle_regular_char(t_tokenizer *tokenizer);
 int is_regular_char(char c);
 void add_to_current_token(char c);
+
 #endif

@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   token_handles.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:01:42 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/22 18:05:54 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:31:43 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "../include/token.h"
+#include "../../include/minishell.h"
 
 void handle_operator(t_tokenizer *tokenizer, int *i)
 {
@@ -37,31 +37,6 @@ void handle_operator(t_tokenizer *tokenizer, int *i)
         tokenizer->tokens = add_token(tokenizer->tokens, operator_token, type);
     }
     (*i)++;
-}
-
-void handle_regular_char(t_tokenizer *tokenizer)
-{
-    if (!tokenizer || !tokenizer->input)
-        return;
-
-    char current_token[256] = {0};
-    int token_length = 0;
-
-    while (tokenizer->position < (int)ft_strlen(tokenizer->input) && 
-           tokenizer->input[tokenizer->position] &&
-           !is_space(tokenizer->input[tokenizer->position]) &&
-           !is_operator(tokenizer->input[tokenizer->position]) &&
-           !is_quote(tokenizer->input[tokenizer->position]) &&
-           token_length < 255)
-    {
-        current_token[token_length++] = tokenizer->input[tokenizer->position++];
-    }
-
-    if (token_length > 0)
-    {
-        current_token[token_length] = '\0';
-        tokenizer->tokens = add_token(tokenizer->tokens, current_token, TOKEN_WORD);
-    }
 }
 
 void handle_space(t_tokenizer *tokenizer, char *current_token, int *token_length)

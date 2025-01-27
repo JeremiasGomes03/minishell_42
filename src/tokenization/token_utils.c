@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/22 18:09:34 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:33:22 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
-#include "../include/token.h"
+#include "../../include/minishell.h"
 
 int is_space(char c)
 {
@@ -28,11 +27,6 @@ int is_operator(char c)
     return (c == '|' || c == '<' || c == '>' ||
             c == '$' || c == '\\' ||
             c == '#' || c == '~');
-}
-
-int is_regular_char(char c)
-{
-    return !is_space(c) && !is_operator(c) && !is_quote(c);
 }
 
 void free_token(t_token *token)
