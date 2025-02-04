@@ -67,6 +67,9 @@ FUNÇÃO parse_input(linha_entrada)
     RETORNA árvore_comandos
 FIM FUNÇÃO
 
+
+
+
 FUNÇÃO tokenizar_linha(linha)
     tokens = []
     token_atual = ""

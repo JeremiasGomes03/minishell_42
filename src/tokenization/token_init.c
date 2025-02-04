@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/27 19:34:29 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/01/31 15:12:52 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ t_tokenizer  *init_tokenizer(char *input)
 }
 
 
-t_tokenizer	*tokenization_loop(char *input) {
+t_tokenizer	*tokenization_loop(char *input)
+{
 	t_tokenizer *tokenizer;
 	int i = 0;
 	char current_token[256] = {0};
@@ -58,7 +59,6 @@ t_tokenizer	*tokenization_loop(char *input) {
 			i++;
 		}
 	}
-
 	if (token_length > 0) {
 		current_token[token_length] = '\0';
 		tokenizer->tokens = add_token(tokenizer->tokens, current_token, TOKEN_WORD);
