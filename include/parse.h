@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 19:22:54 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/31 15:28:35 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/02/05 17:41:31 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include "../lib/libft/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "token.h"
 
 typedef struct s_cmd_node
 {

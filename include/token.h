@@ -6,7 +6,7 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:43:24 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/27 19:31:53 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/02/05 17:40:52 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@
 
 typedef enum e_token_type
 {
-	TOKEN_WORD, // Palavras normais e argumentos
-	TOKEN_PIPE, // |
-	TOKEN_REDIR_IN, // <
-	TOKEN_REDIR_OUT, // >
-	TOKEN_APPEND, // >>
-	TOKEN_QUOTE, // Conteúdo entre aspas simples
-	TOKEN_DQUOTE // Conteúdo entre aspas duplas
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_APPEND,
+	TOKEN_QUOTE,
+	TOKEN_DQUOTE
 } t_token_type;
 
 typedef struct s_token
@@ -37,10 +37,10 @@ typedef struct s_token
 } t_token;
 
 typedef struct s_tokenizer {
-	char    *input;     // string a ser processada
-	int     position;   // posição atual
-	int     quote_state; // estado das aspas
-	t_token *tokens;    // lista de tokens
+	char    *input;
+	int     position;
+	int     quote_state;
+	t_token *tokens;
 } t_tokenizer;
 
 int		is_space(char c);
@@ -55,7 +55,5 @@ t_tokenizer  *tokenization_loop(char *input);
 void handle_quoted_content(const char *input, int *i, char *current_token, int *token_length, char *current_quote);
 void handle_space(t_tokenizer *tokenizer, char *current_token, int *token_length);
 void handle_operator(t_tokenizer *tokenizer, int *i);
-int is_regular_char(char c);
-void add_to_current_token(char c);
 
 #endif
