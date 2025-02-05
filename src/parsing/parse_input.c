@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 19:30:04 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/31 15:32:31 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/02/05 17:14:30 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,15 +117,9 @@ t_cmd_tree	*parse_input(char *input_line)
 		return (NULL);
 	tokens = tokenization_loop(input_line);
 	if (!tokens)
-	{
-		handle_error("Tokenization error");
-		return (NULL);
-	}
+		return (handle_error("Tokenization error"), NULL);
 	if (!process_token_expansions(tokens))
-	{
-		free_tokens(tokens);
-		return (NULL);
-	}
+		return (free_tokens(tokens), NULL);
 	commands = split_by_pipes(tokens);
 	if (!commands || !validate_all_commands(commands))
 	{
