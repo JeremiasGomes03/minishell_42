@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/31 15:12:52 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/02/06 16:19:35 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ t_tokenizer	*tokenization_loop(char *input)
 	tokenizer = init_tokenizer(input);
 	if (!tokenizer)
 		return NULL;
-
-	while (input[i] != '\0') {
+	while (input[i] != '\0')
+	{
 		if (is_quote(input[i])) {
 			handle_quoted_content(input, &i, current_token, &token_length, &current_quote);
 		} else if (is_space(input[i]) && current_quote == '\0') {
@@ -66,7 +66,7 @@ t_tokenizer	*tokenization_loop(char *input)
 	return tokenizer;
 }
 
-t_token	*create_token(char *value, t_token_type type) 
+t_token	*create_token(char *value, t_token_type type)
 {
 	t_token *new_token;
 	
@@ -110,7 +110,7 @@ t_token	*add_token(t_token *tokens, char *value, t_token_type type)
 	return tokens;
 }
 
-void free_all_tokens(t_tokenizer *tokenizer) 
+void free_all_tokens(t_tokenizer *tokenizer)
 {
 	t_token *current;
 	t_token *next;

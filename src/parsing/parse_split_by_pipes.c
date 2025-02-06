@@ -6,7 +6,7 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 17:10:31 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/05 19:38:52 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/02/06 16:20:47 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,22 @@
 
 t_cmd_list split_by_pipes(t_token *tokens)
 {
+	int	i;
 	char **commands;
 	char **current_command;
 	
 	commands = create_empty_command_list();
 	current_command = create_empty_command();
 
-	while ()
+	i = 0;
+	while (tokens[i])
 	{
-		if ()
+		if (tokens[i] == PIPE_TOKEN)
+		{
+			if(!current_command)
+				return (NULL);
+		}
+		i++;
 	}
 }
 // Function split_by_pipes(tokens):
