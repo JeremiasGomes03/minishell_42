@@ -3,20 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:43:24 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/05 17:40:52 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:37:24 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKEN_H
 
 # define TOKEN_H
-
-# include <stdio.h>
-# include <stdbool.h>
-# include "../lib/libft/libft.h"
 
 typedef enum e_token_type
 {
