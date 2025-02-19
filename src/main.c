@@ -6,7 +6,7 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/19 18:28:21 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/02/19 18:32:50 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int main(void)
     
     while (1)
     {
-        input = readline("\x1B[32m🐗TBShell\x1B[37m% ");
+        input = readline("\x1B[34m🐗TBShell\x1B[37m% ");
         if (!input)
         {
             printf("exit\n");
