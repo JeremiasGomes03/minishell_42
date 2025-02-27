@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 14:55:09 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/07 15:51:12 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/02/27 12:54:08 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,7 @@ void			ft_striteri(char *s, void (*f)(unsigned int, char*));
 char            *ft_strjoin(char *left_str, char *buff);
 char			*ft_itoa(int n);
 char			**ft_split(char const *s, char c);
+int             ft_strcmp(const char *s1, const char *s2);
+char            *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
 
 #endif 

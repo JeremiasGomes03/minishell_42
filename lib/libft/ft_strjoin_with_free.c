@@ -1,29 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_strjoin_with_free.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/26 23:11:17 by jeremias         ###   ########.fr       */
+/*   Created: 2025/02/27 12:53:45 by jeremias          #+#    #+#             */
+/*   Updated: 2025/02/27 12:54:54 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include "../lib/libft/libft.h"
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <unistd.h>
-# include <dirent.h>
-# include <string.h>
-# include "token.h"
-# include "parse.h"
-#include <fcntl.h>
-#include <unistd.h>  
-
-#endif
+char *ft_strjoin_with_free(char *s1, char *s2, int free_s1)
+{
+    char *result = ft_strjoin(s1, s2);
+    if (free_s1 && s1)
+        free(s1);
+    return (result);
+}

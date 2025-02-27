@@ -3,46 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/27 19:22:54 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/19 13:29:24 by jerda-si         ###   ########.fr       */
+/*   Created: 2025/02/26 18:03:26 by jeremias          #+#    #+#             */
+/*   Updated: 2025/02/27 12:12:57 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSE_H
-# define PARSE_H
-
-typedef struct s_redirection t_redirection;
+#ifndef PARSER_H
+# define PARSER_H
 
 typedef struct s_cmd_node
 {
-    char            *cmd;
-    char            **args;
-    t_redirection   *redirects;
-    struct s_cmd_node *left;
-    struct s_cmd_node *right;
-} t_cmd_node;
-
-typedef struct s_cmd_tree
-{
-    t_cmd_node  *root;
-} t_cmd_tree;
+    char                **args;
+    int                 in_fd;
+    int                 out_fd;
+    struct s_cmd_node   *next;
+}   t_cmd_node;
 
 typedef struct s_cmd_list
 {
-    t_token         *cmd;
-    struct s_cmd_list *next;
-} t_cmd_list;
+    t_cmd_node  *head;
+    t_cmd_node  *tail;
+}   t_cmd_list;
 
-t_cmd_tree	*parse_input(char *input_line);
-t_cmd_list *create_cmd_list_node(void);
-void add_token_to_cmd(t_cmd_list *list, t_token *token);
-t_cmd_list *split_by_pipes(t_token *tokens);
-t_cmd_list *process_pipe_tokens(t_token *tokens, t_cmd_list *current_cmd,
-                               t_cmd_list *commands);
-int add_to_commands(t_cmd_list **commands, t_cmd_list *new_cmd);
-t_cmd_list *finalize_pipe_split(t_cmd_list *commands, t_cmd_list *current_cmd);
-t_cmd_list *handle_pipe_error(t_cmd_list *commands, t_cmd_list *current_cmd);
+// Parsing
+t_cmd_list  *parse_tokens(t_token *tokens);
+t_cmd_node  *parse_command(t_token **tokens);
+void        parse_redirection(t_cmd_node *cmd, t_token **tokens);
 
-#endif
+// Utils
+t_cmd_node  *create_cmd_node(void);
+void        free_cmd_list(t_cmd_list *cmd_list);
+
+int process_heredoc(char *delimiter);
+int validate_syntax(t_token *tokens);
+
+void add_arg_to_cmd(t_cmd_node *cmd, char *arg);
+int is_redirection(t_token_type type);
+void append_command(t_cmd_list *cmd_list, t_cmd_node *cmd);
+
+#endif  

@@ -1,9 +1,14 @@
 NAME = minishell
 
 SRCS = src/main.c \
-		src/tokenization/token_init.c \
-		src/tokenization/token_utils.c \
-		src/tokenization/token_handles.c \
+       src/token/token.c \
+       src/token/token_utils.c \
+       src/token/token_handlers.c \
+	   	src/token/token_expansion.c \
+	  src/parse/parse.c \
+      src/parse/parse_utils.c \
+      src/parse/parse_handlers.c \
+      src/parse/parse_validations.c \
 
 OBJS = $(SRCS:.c=.o)
 

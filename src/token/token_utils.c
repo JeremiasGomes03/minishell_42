@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/01/27 19:33:22 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/02/26 22:28:56 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,41 @@ int is_space(char c)
     return (c == ' ' || c == '\t' || c == '\n');
 }
 
-int is_quote(char c)
-{
-    return (c == '\'' || c == '\"');
-}
-
 int is_operator(char c)
 {
-    return (c == '|' || c == '<' || c == '>' ||
-            c == '$' || c == '\\' ||
-            c == '#' || c == '~');
+    return (c == '|' || c == '<' || c == '>');
 }
 
-void free_token(t_token *token)
+int is_quote(char c)
 {
-    if (token)
+    return (c == '\'' || c == '"');
+}
+
+void free_tokens(t_token *tokens)
+{
+    t_token *tmp;
+
+    while (tokens)
     {
-        if (token->value)
-            free(token->value);
-        free(token);
+        tmp = tokens;
+        tokens = tokens->next;
+        free(tmp->value);
+        free(tmp);
     }
+}
+
+t_token *reverse_tokens(t_token *tokens)
+{
+    t_token *prev = NULL;
+    t_token *current = tokens;
+    t_token *next;
+
+    while (current)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    return (prev);
 }

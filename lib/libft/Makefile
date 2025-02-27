@@ -6,6 +6,7 @@ SRCS = 	ft_strlen.c \
 		ft_isalnum.c \
 		ft_isascii.c \
 		ft_strncmp.c \
+		ft_strcmp.c \
 		ft_strlcat.c \
 		ft_strdup.c \
 		ft_isprint.c \
@@ -34,6 +35,7 @@ SRCS = 	ft_strlen.c \
 		ft_strjoin.c \
 		ft_itoa.c \
 		ft_split.c \
+		ft_strjoin_with_free.c \
 		get_next_line/get_next_line.c \
 		get_next_line/get_next_line_utils.c
 
