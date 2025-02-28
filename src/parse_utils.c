@@ -5,12 +5,41 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/26 18:06:00 by jeremias          #+#    #+#             */
-/*   Updated: 2025/02/27 12:05:50 by jeremias         ###   ########.fr       */
+/*   Created: 2025/02/27 21:39:49 by jeremias          #+#    #+#             */
+/*   Updated: 2025/02/27 22:19:15 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../include/minishell.h"
+
+void append_command(t_cmd_list *cmd_list, t_cmd_node *cmd)
+{
+    if (!cmd_list->head)
+    {
+        cmd_list->head = cmd;
+        cmd_list->tail = cmd;
+    }
+    else
+    {
+        cmd_list->tail->next = cmd;
+        cmd_list->tail = cmd;
+    }
+}
+
+void free_cmd_list(t_cmd_list *cmd_list)
+{
+    t_cmd_node *current = cmd_list->head;
+    t_cmd_node *next;
+
+    while (current)
+    {
+        next = current->next;
+        free(current->args);
+        free(current);
+        current = next;
+    }
+    free(cmd_list);
+}
 
 t_cmd_node *create_cmd_node(void)
 {
@@ -29,27 +58,10 @@ t_cmd_node *create_cmd_node(void)
     return (node);
 }
 
-void free_cmd_list(t_cmd_list *cmd_list)
-{
-    t_cmd_node *current = cmd_list->head;
-    t_cmd_node *next;
-
-    while (current)
-    {
-        next = current->next;
-        free(current->args);
-        free(current);
-        current = next;
-    }
-    free(cmd_list);
-}
-
 void add_arg_to_cmd(t_cmd_node *cmd, char *arg)
 {
-    int i;
-    
-    printf("Adding argument: %s to command\n", arg);
-    i = 0;
+    int i = 0;
+
     while (cmd->args && cmd->args[i])
         i++;
     cmd->args = realloc(cmd->args, (i + 2) * sizeof(char *));
@@ -57,4 +69,17 @@ void add_arg_to_cmd(t_cmd_node *cmd, char *arg)
         exit_with_error("Failed to allocate memory");
     cmd->args[i] = arg;
     cmd->args[i + 1] = NULL;
+}
+
+int ft_isnumeric(char *str)
+{
+    if (!str)
+        return (0);
+    while (*str)
+    {
+        if (!ft_isdigit(*str))
+            return (0);
+        str++;
+    }
+    return (1);
 }
