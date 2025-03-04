@@ -11,6 +11,7 @@ SRCS = src/main.c \
 		src/exec.c \
 		src/utils.c \
 		src/signal.c \
+		src/expansion.c \
 
 OBJS = $(SRCS:.c=.o)
 

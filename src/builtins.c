@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/02/27 21:31:27 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:05:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,10 @@ void builtin_cd(t_cmd_node *cmd)
 {
     char *dir;
 
-    // Se não houver argumento, muda para o diretório HOME
     if (!cmd->args[1])
-        dir = getenv("HOME"); // Obtém o diretório HOME
+        dir = getenv("HOME");
     else
-        dir = cmd->args[1]; // Usa o diretório fornecido
-
-    // Tenta mudar de diretório
+        dir = cmd->args[1];
     if (chdir(dir) == -1)
-        perror("cd"); // Exibe erro se não for possível mudar de diretório
+        perror("cd");
 }

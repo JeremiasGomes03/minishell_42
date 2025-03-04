@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:04:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/02/27 21:25:59 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:28:33 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ int process_heredoc(char *delimiter)
     int     fd;
     char    *temp_file = "/tmp/minishell_heredoc";
 
-    // Lê o conteúdo do heredoc interativamente
     while (1)
     {
         line = readline("> ");
@@ -66,12 +65,10 @@ int process_heredoc(char *delimiter)
             free(line);
             break;
         }
-        content = ft_strjoin_with_free(content, line, 1); // Concatena a linha ao conteúdo
-        content = ft_strjoin_with_free(content, "\n", 1); // Adiciona uma nova linha
+        content = ft_strjoin_with_free(content, line, 1);
+        content = ft_strjoin_with_free(content, "\n", 1);
         free(line);
     }
-
-    // Escreve o conteúdo em um arquivo temporário
     fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1)
     {
@@ -81,19 +78,10 @@ int process_heredoc(char *delimiter)
     write(fd, content, ft_strlen(content));
     close(fd);
     free(content);
-
-    // Abre o arquivo temporário para leitura e retorna o file descriptor
     fd = open(temp_file, O_RDONLY);
     if (fd == -1)
         exit_with_error("Failed to open heredoc file");
-    unlink(temp_file); // Remove o arquivo temporário
+    unlink(temp_file); 
     return (fd);
 }
 
-char *ft_strjoin_with_free(char *s1, char *s2, int free_s1)
-{
-    char *result = ft_strjoin(s1, s2);
-    if (free_s1 && s1)
-        free(s1);
-    return (result);
-}

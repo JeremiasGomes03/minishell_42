@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/27 22:36:13 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/03 23:47:11 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,33 +37,45 @@ static void check_and_execute_exit(t_cmd_list *cmd_list)
     }
 }
 
-static void execute_and_cleanup(t_cmd_list *cmd_list, char *input, t_token *tokens)
+static void execute_and_cleanup(t_cmd_list *cmd_list, char *input, t_token *tokens, t_shell *shell)
 {
     if (cmd_list)
     {
-        execute_pipeline(cmd_list);
+        execute_pipeline(cmd_list, shell);
         free_cmd_list(cmd_list);
     }
     free(input);
     free_tokens(tokens);
 }
 
-int main(void)
+
+int main(int argc, char **argv, char **envp)
 {
     char        *input;
-    t_token     *tokens;
-    t_cmd_list  *cmd_list;
+    t_shell     shell;
+    
+    (void)argc;
+    (void)argv;
+
+    shell.envp = envp;
+    shell.exit_status = 0;
 
     setup_signals();
     while (1)
     {
         input = readline("minishell> ");
-        if (!input) break;
-        if (*input) add_history(input);
-        process_input(input, &tokens, &cmd_list);
-        if (cmd_list)
-            check_and_execute_exit(cmd_list);
-        execute_and_cleanup(cmd_list, input, tokens);
+        if (!input)
+            break;
+        if (*input)
+            add_history(input);
+
+        process_input(input, &shell.tokens, &shell.cmd_list);
+
+        if (shell.cmd_list)
+            check_and_execute_exit(shell.cmd_list);
+
+        execute_pipeline(shell.cmd_list, &shell);
+        execute_and_cleanup(shell.cmd_list, input, shell.tokens, &shell);
     }
     return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/27 22:19:30 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:47:09 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,13 @@ typedef struct s_cmd_list
     t_cmd_node  *tail;
 } t_cmd_list;
 
+typedef struct s_shell
+{
+    t_token     *tokens;      // Lista de tokens
+    t_cmd_list  *cmd_list;    // Lista de comandos
+    char        **envp;       // Ambiente
+    int         exit_status;  // Status de saída
+}   t_shell;
 
 // Tokenização
 t_token     *tokenize_input(char *input);
@@ -63,7 +70,7 @@ void        handle_word(char **input, t_token **tokens);
 void        handle_quotes(char **input, t_token **tokens, char quote);
 void        add_token(t_token **tokens, char *value, t_token_type type);
 void        handle_env_vars(char **input, t_token **tokens);
-char        *ft_strjoin_char(char *s1, char c);
+
 
 // Tokenização Utils
 int         is_space(char c);
@@ -78,7 +85,7 @@ void        parse_redirection(t_cmd_node *cmd, t_token **tokens);
 int         is_redirection(t_token_type type);
 void        append_command(t_cmd_list *cmd_list, t_cmd_node *cmd);
 int         process_heredoc(char *delimiter);
-char        *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
+
 
 // Parsing Utils
 void        append_command(t_cmd_list *cmd_list, t_cmd_node *cmd);
@@ -88,8 +95,8 @@ void        add_arg_to_cmd(t_cmd_node *cmd, char *arg);
 int         ft_isnumeric(char *str);
 
 // Execução
-void        execute_command(t_cmd_node *cmd);
-void        execute_pipeline(t_cmd_list *cmd_list);
+void execute_command(t_cmd_node *cmd, t_shell *shell);
+void execute_pipeline(t_cmd_list *cmd_list, t_shell *shell);
 
 // Builtins
 void        builtin_echo(t_cmd_node *cmd);
@@ -101,13 +108,20 @@ void        handle_signal(int sig);
 void        setup_signals(void);
 void        handle_eof(void);
 
+// Expansion
+char        *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
+void expander(t_token **head, t_shell *shell);
+int         check_quotes(char c, int quotes);
+char *expand_variables(char *cmd, t_shell *shell);
+char        *ft_strjoin_char(char *s1, char c);
+char *my_getenv(const char *var_name, char **envp);
+
 // Utils
 void        exit_with_error(char *msg);
 void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node  *create_cmd_node(void);
 void        add_arg_to_cmd(t_cmd_node *cmd, char *arg);
 int         validate_syntax(t_token *tokens);
-char        *expand_variables(char *input);
-void        expand_command_vars(t_cmd_node *cmd);
+
 
 #endif
