@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/03 23:48:02 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:22:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,30 @@ int validate_syntax(t_token *tokens)
         current = current->next;
     }
     return (1);
+}
+
+char **ft_arrdup(char **arr)
+{
+    char    **new;
+    int     i;
+
+    i = 0;
+    while (arr[i])
+        i++;
+    new = malloc(sizeof(char *) * (i + 1));
+    i = -1;
+    while (arr[++i])
+        new[i] = ft_strdup(arr[i]);
+    new[i] = NULL;
+    return (new);
+}
+
+void ft_free_array(char **arr)
+{
+    int i;
+
+    i = -1;
+    while (arr[++i])
+        free(arr[i]);
+    free(arr);
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:04:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/02/28 17:28:33 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:40:53 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_cmd_list *parse_tokens(t_token *tokens)
         append_command(cmd_list, current);
 
         if (tokens && tokens->type == TOKEN_PIPE)
-            tokens = tokens->next; // Avança para o próximo comando após o pipe
+            tokens = tokens->next;
     }
     return cmd_list;
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/03 23:46:12 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:40:33 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,30 +21,40 @@ char *expand_variables(char *cmd, t_shell *shell)
     int quotes = 0;
 
     if (!cmd)
-        return (NULL);
+        return (NULL);  
     while (cmd[i])
     {
         quotes = check_quotes(cmd[i], quotes);
         if (cmd[i] == '$' && quotes != 2)
         {
             i++;
-            var_name = NULL;
-            while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
+            if (cmd[i] == '?')
             {
-                var_name = ft_strjoin_char(var_name, cmd[i]);
+                var_value = ft_itoa(shell->exit_status);
+                result = ft_strjoin_with_free(result, var_value, 1);
+                free(var_value);
                 i++;
             }
-            if (var_name)
+            else
             {
-                var_value = my_getenv(var_name, shell->envp);
-                if (!var_value)
+                var_name = NULL;
+                while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
                 {
-                    printf("Erro ao expandir a variável: $%s\n", var_name);
-                    free(var_name);
-                    return (NULL);
+                    var_name = ft_strjoin_char(var_name, cmd[i]);
+                    i++;
                 }
-                result = ft_strjoin_with_free(result, var_value, 1);
-                free(var_name);
+                if (var_name)
+                {
+                    var_value = get_envp(shell, var_name);
+                    if (!var_value)
+                    {
+                        free(var_name);
+                        return (NULL);
+                    }
+                    result = ft_strjoin_with_free(result, var_value, 1);
+                    free(var_value);
+                    free(var_name);
+                }
             }
         }
         else
@@ -58,26 +68,68 @@ char *expand_variables(char *cmd, t_shell *shell)
     return (result);
 }
 
-
-char *my_getenv(const char *var_name, char **envp)
+static int ft_findchr(char *str, char c)
 {
-    int i = 0;
-    size_t len = ft_strlen(var_name);
+    int i;
 
-    while (envp[i])
+    i = 0;
+    while (str[i])
     {
-        printf("Verificando %s em envp[%d]: %s\n", var_name, i, envp[i]);
-        if (ft_strncmp(envp[i], var_name, len) == 0 && envp[i][len] == '=')
-        {
-            printf("Encontrado %s=%s\n", var_name, envp[i] + len + 1);
-            return (envp[i] + len + 1);
-        }
+        if (str[i] == c)
+            return i;
         i++;
     }
-    printf("Variável %s não encontrada\n", var_name);
-    return (NULL);
+    return -1;
 }
 
+char *get_envp(t_shell *shell, char *cmd)
+{
+    char *var_name;
+    char *var_value;
+    int len;
+    int var_len;
+    char **envp = shell->envp;
+
+    if (!cmd || !shell || !shell->envp)
+        return (NULL);
+    cmd++;
+    if (*cmd == '?')
+        return (ft_itoa(shell->exit_status));
+
+    if (*cmd == '{')
+        cmd++;
+
+    len = 0;
+    while (cmd[len] && (ft_isalnum(cmd[len]) || cmd[len] == '_'))
+        len++;
+
+    if (len == 0)
+        return (ft_strdup(""));
+
+    var_name = ft_substr(cmd, 0, len);
+    if (!var_name)
+        return (NULL);
+    while (*envp)
+    {
+        var_len = ft_findchr(*envp, '=');
+        if (var_len == -1)
+        {
+            envp++;
+            continue;
+        }
+
+        if (ft_strncmp(var_name, *envp, var_len) == 0)
+        {
+            var_value = ft_strdup(*envp + var_len + 1);
+            free(var_name);
+            return (var_value);
+        }
+        envp++;
+    }
+    var_value = ft_strdup("");
+    return (NULL);
+}
+        
 
 
 int check_quotes(char c, int quotes)
@@ -91,21 +143,33 @@ int check_quotes(char c, int quotes)
 
 void expander(t_token **head, t_shell *shell)
 {
-    t_token *token = *head;
     char    *temp;
-
-    while (token)
+    int     token_count = 0;
+    t_token *current = *head;
+    while (current)
     {
-        if (ft_strchr(token->value, '$')) // Verifica se há variáveis para expandir
+        token_count++;
+        current = current->next;
+    }
+    current = *head;
+    while (current)
+    {
+        if (ft_strchr(current->value, '$'))
         {
-            temp = token->value;
-            token->value = expand_variables(token->value, shell); // Passando shell para expandir variáveis
-            if (!token->value) // Se a expansão falhar, mantém o valor original
-                token->value = temp;
+            if (token_count == 1 && current->value[0] == '$')
+            {
+                current = current->next;
+                continue;
+            }
+
+            temp = current->value;
+            current->value = expand_variables(current->value, shell);
+            if (!current->value)
+                current->value = temp;
             else
-                free(temp); // Libera a memória do valor original
+                free(temp);
         }
-        token = token->next;
+        current = current->next;
     }
 }
 char *ft_strjoin_with_free(char *s1, char *s2, int free_s1)

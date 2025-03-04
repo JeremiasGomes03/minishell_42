@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/03 23:47:11 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:31:07 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,10 @@ int main(int argc, char **argv, char **envp)
             break;
         if (*input)
             add_history(input);
-
         process_input(input, &shell.tokens, &shell.cmd_list);
 
         if (shell.cmd_list)
             check_and_execute_exit(shell.cmd_list);
-
-        execute_pipeline(shell.cmd_list, &shell);
         execute_and_cleanup(shell.cmd_list, input, shell.tokens, &shell);
     }
     return 0;

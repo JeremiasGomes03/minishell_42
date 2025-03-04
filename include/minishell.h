@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/28 18:47:09 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/04 16:22:47 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,11 +110,11 @@ void        handle_eof(void);
 
 // Expansion
 char        *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
-void expander(t_token **head, t_shell *shell);
+void expander(t_token **head, t_shell *shell);  
 int         check_quotes(char c, int quotes);
 char *expand_variables(char *cmd, t_shell *shell);
 char        *ft_strjoin_char(char *s1, char c);
-char *my_getenv(const char *var_name, char **envp);
+char *get_envp(t_shell *shell, char *cmd);
 
 // Utils
 void        exit_with_error(char *msg);
@@ -122,6 +122,7 @@ void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node  *create_cmd_node(void);
 void        add_arg_to_cmd(t_cmd_node *cmd, char *arg);
 int         validate_syntax(t_token *tokens);
-
+char **ft_arrdup(char **arr);
+void ft_free_array(char **arr);
 
 #endif

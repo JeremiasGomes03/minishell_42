@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:01:42 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/28 17:06:54 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/04 14:44:52 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ void handle_word(char **input, t_token **tokens)
     add_token(tokens, value, TOKEN_WORD);
     *input += i;
 }
-
-#include "../include/minishell.h"
 
 void handle_quotes(char **input, t_token **tokens, char quote)
 {
