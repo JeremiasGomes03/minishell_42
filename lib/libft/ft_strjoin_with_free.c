@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin_with_free.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:53:45 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/05 18:52:30 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/06 18:11:51 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 char	*ft_strjoin_with_free(char *s1, char *s2, int free_s1)
 {
-	char *result = ft_strjoin(s1, s2);
+	char	*result;
+
+	result = ft_strjoin(s1, s2);
 	if (free_s1 && s1)
 		free(s1);
 	return (result);

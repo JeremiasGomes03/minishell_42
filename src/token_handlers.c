@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:01:42 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/05 20:40:13 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/06 17:49:22 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,24 +62,25 @@ void	handle_word(char **input, t_token **tokens)
 	*input += i;
 }
 
-void handle_quotes(char **input, t_token **tokens, char quote)
+void	handle_quotes(char **input, t_token **tokens, char quote)
 {
-    char *value;
-    int i = 1;
+	char	*value;
+	int		i;
 
-    (*input)++;
-    while ((*input)[i] && (*input)[i] != quote)
-        i++;
-    if ((*input)[i] == quote)
-    {
-        value = ft_substr(*input, 0, i);
-        add_token(tokens, value, TOKEN_WORD);
-        *input += i + 1;
-    }
-    else
-    {
-        exit_with_error("Unclosed quote");
-    }
+	i = 1;
+	(*input)++;
+	while ((*input)[i] && (*input)[i] != quote)
+		i++;
+	if ((*input)[i] == quote)
+	{
+		value = ft_substr(*input, 0, i);
+		add_token(tokens, value, TOKEN_WORD);
+		*input += i + 1;
+	}
+	else
+	{
+		exit_with_error("Unclosed quote");
+	}
 }
 
 
