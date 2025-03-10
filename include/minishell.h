@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/06 18:11:07 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/08 21:45:10 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ int			is_redirection(t_token_type type);
 void		append_command(t_cmd_list *cmd_list, t_cmd_node *cmd);
 int			process_heredoc(char *delimiter);
 
-
 // Parsing Utils
 void		append_command(t_cmd_list *cmd_list, t_cmd_node *cmd);
 void		free_cmd_list(t_cmd_list *cmd_list);
@@ -102,6 +101,16 @@ void		execute_pipeline(t_cmd_list *cmd_list, t_shell *shell);
 void		builtin_echo(t_cmd_node *cmd);
 void		builtin_cd(t_cmd_node *cmd);
 void		builtin_exit(t_cmd_node *cmd);
+void		builtin_export(t_cmd_node *cmd);
+void		builtin_unset(t_cmd_node *cmd);
+void		builtin_pwd(t_cmd_node *cmd);
+void		builtin_env(t_cmd_node *cmd);
+extern char	**environ;
+
+// test
+int	is_builtin(char *cmd);
+void	execute_builtin(t_cmd_node *cmd);
+void	prompt_loop(void);
 
 // Sinais
 void		handle_signal(int sig);

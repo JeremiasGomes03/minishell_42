@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/05 19:52:31 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:45:51 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <readline/history.h>
 
 
-static	void process_input(char *input, t_token **tokens, t_cmd_list **cmd_list)
+static	void	process_input(char *input, t_token **tokens, t_cmd_list **cmd_list)
 {
 	*tokens = tokenize_input(input);
 	if (!validate_syntax(*tokens))
@@ -48,15 +48,14 @@ static	void execute_and_cleanup(t_cmd_list *cmd_list, char *input, t_token *toke
 	free_tokens(tokens);
 }
 
-
 int	main(int argc, char **argv, char **envp)
 {
 	char		*input;
 	t_shell		shell;
+	t_cmd_node	cmd;
 
 	(void)argc;
 	(void)argv;
-
 	shell.envp = envp;
 	shell.exit_status = 0;
 	setup_signals();
@@ -67,29 +66,22 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
-		process_input(input, &shell.tokens, &shell.cmd_list);
-		if (shell.cmd_list)
-			check_and_execute_exit(shell.cmd_list);
-		execute_and_cleanup(shell.cmd_list, input, shell.tokens, &shell);
+		// Simular parsing básico (dividir a entrada em argumentos)
+		cmd.args = malloc(sizeof(char *) * 3);
+		cmd.args[0] = strtok(input, " ");
+		cmd.args[1] = strtok(NULL, " ");
+		cmd.args[2] = NULL;
+		// Se for um builtin, executa diretamente
+		if (is_builtin(cmd.args[0]))
+			execute_builtin(&cmd);
+		else
+			execute_and_cleanup(shell.cmd_list, input, shell.tokens, &shell);
+
+		free(cmd.args);
+		free(input);
 	}
 	return (0);
 }
 
-void	builtin_exit(t_cmd_node *cmd)
-{
-	int	exit_code;
 
-	exit_code = 0;
-	if (cmd->args[1])
-	{
-		exit_code = ft_atoi(cmd->args[1]);
-		if (!ft_isnumeric(cmd->args[1]))
-		{
-			printf("exit: %s: numeric argument required\n", cmd->args[1]);
-			exit_code = 255;
-		}
-	}
-	printf("exit\n");
-	exit(exit_code);
-}
 
