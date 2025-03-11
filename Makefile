@@ -13,7 +13,7 @@ SRCS = src/main.c \
 		src/signal.c \
 		src/expansion.c \
 		src/builtins_two.c \
-		src/test.c \
+		src/test_builtins.c \
 
 OBJS = $(SRCS:.c=.o)
 

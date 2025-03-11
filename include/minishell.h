@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/08 21:45:10 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/10 18:47:42 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,10 +107,8 @@ void		builtin_pwd(t_cmd_node *cmd);
 void		builtin_env(t_cmd_node *cmd);
 extern char	**environ;
 
-// test
-int	is_builtin(char *cmd);
 void	execute_builtin(t_cmd_node *cmd);
-void	prompt_loop(void);
+int	is_builtin(t_cmd_node *cmd);
 
 // Sinais
 void		handle_signal(int sig);
