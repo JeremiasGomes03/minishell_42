@@ -6,14 +6,14 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/14 20:36:07 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 20:33:47 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 t_token *tokenize_input(char *input)
 {
-    t_token *tokens = NULL;
+	t_token	*tokens = NULL;
 
     while (*input)
     {
@@ -54,7 +54,7 @@ void add_token(t_token **tokens, char *value, t_token_type type, t_quote_type qu
         exit_with_error("Failed to allocate memory");
     new->value = value;
     new->type = type;
-    new->quote_type = quote_type;  // Define corretamente o tipo de aspas
+    new->quote_type = quote_type;
     new->next = NULL;
     if (!*tokens)
         *tokens = new;
@@ -68,7 +68,7 @@ void add_token(t_token **tokens, char *value, t_token_type type, t_quote_type qu
 }
 
 
-void handle_env_vars(char **input, t_token **tokens)
+void	handle_env_vars(char **input, t_token **tokens)
 {
     char    *var_name;
     char    *var_value;

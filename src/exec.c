@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 20:58:01 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 19:45:23 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,14 @@ void execute_command(t_cmd_node *cmd, t_shell *shell)
     pid_t   pid;
     int     status;
 
-    if (!cmd || !cmd->args || !cmd->args[0])
-        return ;
-    pid = fork();
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return ;
+	if (is_builtin(cmd))
+	{
+		execute_builtin(cmd, shell);
+		return ;
+	} 
+	pid = fork();
     if (pid == -1)
     {
         perror("fork");

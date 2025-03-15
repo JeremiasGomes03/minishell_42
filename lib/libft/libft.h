@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 14:55:09 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/07 17:47:04 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 18:22:24 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
 
 void			*ft_memset(void *ptr, int value, size_t num);
 void			ft_bzero(void *s, size_t len);

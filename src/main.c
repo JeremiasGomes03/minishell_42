@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/14 21:59:53 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 20:17:52 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void process_input(char *input, t_token **tokens, t_cmd_list **cmd_list, 
         printf("Erro de sintaxe\n");
         free_tokens(*tokens);
         *tokens = NULL;
-        *cmd_list = NULL;
+        *cmd_list = NULL;   
         return;
     }
     t_token *first_token = *tokens;
@@ -97,8 +97,8 @@ int main(int argc, char **argv, char **envp)
 
     (void)argc;
     (void)argv;
-
-    shell.envp = envp;
+     
+    shell.envp = dup_envp(envp);
     shell.exit_status = 0;
     shell.cmd_list = NULL;
     shell.tokens = NULL;
@@ -137,22 +137,7 @@ int main(int argc, char **argv, char **envp)
                 free_tokens(shell.tokens);
         }
     }
+    free_envp(shell.envp);
     return (0);
-}
-
-void builtin_exit(t_cmd_node *cmd)
-{
-    int exit_code = 0;
-    if (cmd->args[1])
-    {
-        exit_code = ft_atoi(cmd->args[1]);
-        if (!ft_isnumeric(cmd->args[1]))
-        {
-            printf("exit: %s: numeric argument required\n", cmd->args[1]);
-            exit_code = 255;
-        }
-    }
-    printf("exit\n");
-    exit(exit_code);
 }
 

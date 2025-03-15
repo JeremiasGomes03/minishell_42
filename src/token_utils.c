@@ -6,27 +6,28 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 21:40:09 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 21:30:39 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 18:06:40 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int is_space(char c)
+int	is_space(char c)
 {
-    return (c == ' ' || c == '\t' || c == '\n');
+	return (c == ' ' || c == '\t' || c == '\n');
 }
 
-int is_operator(char c)
+int	is_operator(char c)
 {
-    return (c == '|' || c == '<' || c == '>');
+	return (c == '|' || c == '<' || c == '>');
 }
 
-int is_quote(char c)
+int	is_quote(char c)
 {
-    return (c == '\'' || c == '"');
+	return (c == '\'' || c == '"');
 }
-void free_tokens(t_token *tokens)
+
+void	free_tokens(t_token *tokens)
 {
     t_token *current = tokens;
     t_token *next;

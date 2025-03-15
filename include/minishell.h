@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/14 21:54:52 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 19:03:45 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,18 +125,28 @@ char	*read_input_line(void);
 int     my_mkstemp(char *template);
 
 // Execução
-void execute_command(t_cmd_node *cmd, t_shell *shell);
-void execute_pipeline(t_cmd_list *cmd_list, t_shell *shell);
+void		execute_command(t_cmd_node *cmd, t_shell *shell);
+void		execute_pipeline(t_cmd_list *cmd_list, t_shell *shell);
 
 // Builtins
-void        builtin_echo(t_cmd_node *cmd);
-void        builtin_cd(t_cmd_node *cmd);
-void        builtin_exit(t_cmd_node *cmd);
+void		builtin_echo(t_cmd_node *cmd);
+void		builtin_cd(t_cmd_node *cmd);
+void		builtin_exit(t_cmd_node *cmd);
+void		builtin_export(t_shell *shell, char *var);
+void		builtin_unset(t_shell *shell, char *var);
+void		builtin_pwd(t_cmd_node *cmd);
+void		builtin_env(t_shell *shell);
+extern char	**environ;
+char		**dup_envp(char **envp);
+void		free_envp(char **envp);
+
+void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
+int			is_builtin(t_cmd_node *cmd);
 
 // Sinais
-void        handle_signal(int sig);
-void        setup_signals(void);
-void        handle_eof(void);
+void		handle_signal(int sig);
+void		setup_signals(void);
+void		handle_eof(void);
 
 // Expansion
 char        *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
@@ -151,10 +161,8 @@ void        exit_with_error(char *msg);
 void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node  *create_cmd_node(void);
 int         validate_syntax(t_token *tokens);
-char        **ft_arrdup(char **arr);
-void        ft_free_array(char **arr);
-int			ft_isspace(int c);
-
+char **ft_arrdup(char **arr);
+void ft_free_array(char **arr);
+int ft_isspace(int c);
 void	expand_command_args(t_cmd_node *cmd, t_shell *shell);
-
 #endif

@@ -12,6 +12,9 @@ SRCS = src/main.c \
 		src/utils.c \
 		src/signal.c \
 		src/expansion.c \
+		src/builtins_two.c \
+		src/test_builtins.c \
+		src/envp.c \
 		src/process_heredoc_utils.c \
 		src/process_heredoc.c \
 

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:04:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 21:47:30 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/15 18:29:46 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,4 @@ t_cmd_node *parse_command(t_token **tokens, t_shell *shell)
 	}
 	return (cmd);
 }
-	
-		
+
