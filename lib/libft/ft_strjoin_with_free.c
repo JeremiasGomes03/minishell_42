@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin_with_free.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:53:45 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/05 18:52:30 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/10 18:20:23 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin_with_free(char *s1, char *s2, int free_s1)
+char *ft_strjoin_with_free(char *s1, char *s2, int free_s1)
 {
-	char *result = ft_strjoin(s1, s2);
-	if (free_s1 && s1)
-		free(s1);
-	return (result);
+    char *result = ft_strjoin(s1, s2);
+    if (free_s1 && s1) 
+        free(s1);
+    return result;
 }
+

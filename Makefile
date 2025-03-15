@@ -12,6 +12,8 @@ SRCS = src/main.c \
 		src/utils.c \
 		src/signal.c \
 		src/expansion.c \
+		src/process_heredoc_utils.c \
+		src/process_heredoc.c \
 
 OBJS = $(SRCS:.c=.o)
 

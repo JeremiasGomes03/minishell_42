@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 21:39:49 by jeremias          #+#    #+#             */
-/*   Updated: 2025/02/27 22:19:15 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/14 17:11:43 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,23 @@ void append_command(t_cmd_list *cmd_list, t_cmd_node *cmd)
         cmd_list->tail = cmd;
     }
 }
-
+    
 void free_cmd_list(t_cmd_list *cmd_list)
 {
-    t_cmd_node *current = cmd_list->head;
+    t_cmd_node *cmd = cmd_list->head;
     t_cmd_node *next;
 
-    while (current)
+    while (cmd)
     {
-        next = current->next;
-        free(current->args);
-        free(current);
-        current = next;
+        next = cmd->next;
+        if (cmd->args)
+        {
+            for (int i = 0; cmd->args[i]; i++)
+                free(cmd->args[i]);
+            free(cmd->args);
+        }
+        free(cmd);
+        cmd = next;
     }
     free(cmd_list);
 }
@@ -66,8 +71,10 @@ void add_arg_to_cmd(t_cmd_node *cmd, char *arg)
         i++;
     cmd->args = realloc(cmd->args, (i + 2) * sizeof(char *));
     if (!cmd->args)
-        exit_with_error("Failed to allocate memory");
-    cmd->args[i] = arg;
+        exit_with_error("Failed to allocate memory for cmd->args");
+    cmd->args[i] = ft_strdup(arg);
+    if (!cmd->args[i])
+        exit_with_error("Failed to duplicate argument");
     cmd->args[i + 1] = NULL;
 }
 

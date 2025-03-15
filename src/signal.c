@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:06:00 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/04 14:22:10 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:32:41 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void handle_sigint(int sig)
         printf("\n");
         rl_on_new_line();
         rl_replace_line("", 0);
-        rl_redisplay();
     }
 }
 

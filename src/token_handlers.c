@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:01:42 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/04 14:44:52 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/14 17:00:37 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,31 +20,31 @@ void handle_operator(char **input, t_token **tokens)
     if ((*input)[0] == '|')
     {
         value = ft_strdup("|");
-        add_token(tokens, value, TOKEN_PIPE);
+        add_token(tokens, value, TOKEN_PIPE, NO_QUOTES);
         (*input)++;
     }
     else if ((*input)[0] == '<' && (*input)[1] == '<')
     {
         value = ft_strdup("<<");
-        add_token(tokens, value, TOKEN_HEREDOC);
+        add_token(tokens, value, TOKEN_HEREDOC, NO_QUOTES);
         (*input) += 2;
     }
     else if ((*input)[0] == '>' && (*input)[1] == '>')
     {
         value = ft_strdup(">>");
-        add_token(tokens, value, TOKEN_APPEND);
+        add_token(tokens, value, TOKEN_APPEND, NO_QUOTES);
         (*input) += 2;
     }
     else if ((*input)[0] == '<')
     {
         value = ft_strdup("<");
-        add_token(tokens, value, TOKEN_REDIR_IN);
+        add_token(tokens, value, TOKEN_REDIR_IN, NO_QUOTES);
         (*input)++;
     }
     else if ((*input)[0] == '>')
     {
         value = ft_strdup(">");
-        add_token(tokens, value, TOKEN_REDIR_OUT);
+        add_token(tokens, value, TOKEN_REDIR_OUT, NO_QUOTES);
         (*input)++;
     }
 }
@@ -57,29 +57,39 @@ void handle_word(char **input, t_token **tokens)
     while ((*input)[i] && !is_space((*input)[i]) && !is_operator((*input)[i]) && !is_quote((*input)[i]))
         i++;
     value = ft_substr(*input, 0, i);
-    add_token(tokens, value, TOKEN_WORD);
+
+    // Agora explicitamente passando NO_QUOTES
+    add_token(tokens, value, TOKEN_WORD, NO_QUOTES);
     *input += i;
 }
+
+
+
 
 void handle_quotes(char **input, t_token **tokens, char quote)
 {
     char *value;
-    int i = 1;
+    t_quote_type quote_type;
 
-    (*input)++;
-    while ((*input)[i] && (*input)[i] != quote)
-        i++;
-    if ((*input)[i] == quote)
-    {
-        value = ft_substr(*input, 0, i);
-        add_token(tokens, value, TOKEN_WORD);
-        *input += i + 1;
+    quote_type = (quote == '\'') ? SINGLE_QUOTES : DOUBLE_QUOTES;
+    value = get_quoted_literal(input, quote);
+    if (!value)
+    {   
+        printf("minishell: syntax error: unclosed quote\n");
+        *input = NULL;
+        return;
     }
-    else
-    {
-        exit_with_error("Unclosed quote");
-    }
+    add_token(tokens, value, TOKEN_WORD, quote_type);
 }
+
+
+
+
+
+
+
+
+
 
 
 

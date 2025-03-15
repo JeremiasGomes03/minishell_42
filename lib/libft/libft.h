@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 14:55:09 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/02/27 12:54:08 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/07 17:47:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+#include <stdio.h>
 
 void			*ft_memset(void *ptr, int value, size_t num);
 void			ft_bzero(void *s, size_t len);
@@ -53,7 +54,7 @@ char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strtrim(char const *s1, char const *set);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
-char            *ft_strjoin(char *left_str, char *buff);
+char            *ft_strjoin(const char *s1, const char *s2);
 char			*ft_itoa(int n);
 char			**ft_split(char const *s, char c);
 int             ft_strcmp(const char *s1, const char *s2);

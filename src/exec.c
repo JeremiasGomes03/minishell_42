@@ -3,31 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/05 19:45:52 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/14 20:58:01 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
+void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
 {
 	int		i;
 	char	*expanded_arg;
+	char	*temp;
+	int		quotes;
 
 	i = 0;
+	quotes = 0;
 	while (cmd->args && cmd->args[i])
 	{
-		if (ft_strchr(cmd->args[i], '$'))
+		quotes = check_quotes(cmd->args[i][0], quotes);
+		if (cmd->args[i][0] == '\1')
+		{
+			temp = ft_strdup(cmd->args[i] + 1);
+			if (!temp)
+			{
+				perror("ft_strdup");
+				exit(EXIT_FAILURE);
+			}
+			free(cmd->args[i]);
+			cmd->args[i] = temp;
+		}
+		else if (ft_strchr(cmd->args[i], '$') && quotes != 2)
 		{
 			expanded_arg = expand_variables(cmd->args[i], shell);
 			if (!expanded_arg)
 			{
-				printf("Erro ao expandir variáveis no argumento: %s\n",
-					cmd->args[i]);
-				return ;
+				printf("Erro ao expandir variáveis no argumento: %s\n", cmd->args[i]);
+				return;
 			}
 			free(cmd->args[i]);
 			cmd->args[i] = expanded_arg;
@@ -44,6 +58,7 @@ static void	setup_child_signals(void)
 
 static void	execute_child(t_cmd_node *cmd)
 {
+	setup_child_signals();
 	if (cmd->in_fd != STDIN_FILENO)
 	{
 		if (dup2(cmd->in_fd, STDIN_FILENO) == -1)
@@ -67,47 +82,31 @@ static void	execute_child(t_cmd_node *cmd)
 	exit(EXIT_FAILURE);
 }
 
-void	execute_command(t_cmd_node *cmd, t_shell *shell)
+void execute_command(t_cmd_node *cmd, t_shell *shell)
 {
-	pid_t	pid;
-	int		status;
+    pid_t   pid;
+    int     status;
 
-	if (!cmd || !cmd->args || !cmd->args[0])
-		return ;
-	if (cmd->args[0][0] == '$' && cmd->args[0][1] != '\0')
-	{
-		char *var_value = get_envp(shell, cmd->args[0]);
-
-		if (var_value)
-		{
-			printf("%s\n", var_value);
-			free(var_value);
-			shell->exit_status = 0;
-		}
-		else
-		{
-			shell->exit_status = 1;
-		}
-		return ;
-	}
-	expand_command_args(cmd, shell);
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return ;
-	}
-	else if (pid == 0)
-	{
-		setup_child_signals();
-		execute_child(cmd);
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		shell->exit_status = WEXITSTATUS(status);
-	}
+    if (!cmd || !cmd->args || !cmd->args[0])
+        return ;
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        return ;
+    }
+    else if (pid == 0)
+    {
+        setup_child_signals();
+        execute_child(cmd);
+    }
+    else
+    {
+        waitpid(pid, &status, 0);
+        shell->exit_status = WEXITSTATUS(status);
+    }
 }
+
 
 void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 {
@@ -125,12 +124,19 @@ void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 			return ;
 		}
 		if (prev_pipe_in != -1)
+		{
 			cmd->in_fd = prev_pipe_in;
-		if (cmd->next)
+		}
+		if (cmd->next)	
+		{
 			cmd->out_fd = pipefd[1];
+		}
 		execute_command(cmd, shell);
 		if (prev_pipe_in != -1)
+		{
 			close(prev_pipe_in);
+			prev_pipe_in = -1;
+		}
 		if (cmd->next)
 		{
 			close(pipefd[1]);
@@ -139,8 +145,7 @@ void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 		cmd = cmd->next;
 	}
 	if (prev_pipe_in != -1)
+	{
 		close(prev_pipe_in);
+	}
 }
-
-
-

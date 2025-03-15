@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/05 19:45:31 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/14 20:57:25 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,61 +14,65 @@
 
 char    *expand_variables(char *cmd, t_shell *shell)
 {
-	char 	*result = NULL;
-	char	*var_name;
-	char    *var_value;
-	int		i;
-	int		quotes;
+    char    *result;
+    char    *var_name;
+    char    *var_value;
+    int     i;
+    int     quotes;
 
-	i = 0;
-	quotes = 0;
-	if (!cmd)
-		return (NULL);
-	while (cmd[i])
-	{
-		quotes = check_quotes(cmd[i], quotes);
-		if (cmd[i] == '$' && quotes != 2)
-		{
-			i++;
-			if (cmd[i] == '?')
-			{
-				var_value = ft_itoa(shell->exit_status);
-				result = ft_strjoin_with_free(result, var_value, 1);
-				free(var_value);
+    i = 0;
+    quotes = 0;
+    if (!cmd)
+        return (NULL);
+    result = ft_strdup("");
+    if (!result)
+        return (NULL);
+    while (cmd[i])
+    {
+        quotes = check_quotes(cmd[i], quotes);
+        if (cmd[i] == '$' && quotes != 2)
+        {
+            i++;
+            if (cmd[i] == '?')
+            {
+                var_value = ft_itoa(shell->exit_status);
+                result = ft_strjoin_with_free(result, var_value, 1);
+                free(var_value);
                 i++;
-			}
-			else
-			{
-				var_name = NULL;
-				while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
-				{
-					var_name = ft_strjoin_char(var_name, cmd[i]);
-					i++;
-				}
-				if (var_name)
-				{
-					var_value = get_envp(shell, var_name);
-					if (!var_value)
-					{
-						free(var_name);
-						return (NULL);
-					}
-					result = ft_strjoin_with_free(result, var_value, 1);
-					free(var_value);
-					free(var_name);
-				}
-			}
-		}
-		else
-		{
-			result = ft_strjoin_char(result, cmd[i]);
-			if (!result)
-				return (NULL);
-			i++;
-		}
-	}
-	return (result);
+            }
+            else
+            {
+                var_name = NULL;
+                while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
+                {
+                    var_name = ft_strjoin_char(var_name, cmd[i]);
+                    i++;
+                }
+                if (var_name)
+                {
+                    var_value = get_envp(shell, var_name);
+                    if (!var_value)
+                    {
+                        free(var_name);
+                        return (NULL);
+                    }
+                    result = ft_strjoin_with_free(result, var_value, 1);
+                    free(var_value);
+                    free(var_name);
+                }
+            }
+        }
+        else
+        {
+            result = ft_strjoin_char(result, cmd[i]);
+            if (!result)
+                return (NULL);
+            i++;
+        }
+    }
+    return (result);
 }
+
 
 static int	ft_findchr(char *str, char c)
 {
@@ -84,6 +88,7 @@ static int	ft_findchr(char *str, char c)
 	return (-1);
 }
 
+
 char	*get_envp(t_shell *shell, char *cmd)
 {
 	char	*var_name;
@@ -94,7 +99,6 @@ char	*get_envp(t_shell *shell, char *cmd)
 
 	if (!cmd || !shell || !shell->envp)
 		return (NULL);
-	cmd++;
 	if (*cmd == '?')
 		return (ft_itoa(shell->exit_status));
 	if (*cmd == '{')
@@ -127,46 +131,31 @@ char	*get_envp(t_shell *shell, char *cmd)
 	return (NULL);
 }
 
-int	check_quotes(char c, int quotes)
+int check_quotes(char c, int quotes)
 {
-	if (c == '\"' && quotes != 2)
-		return (quotes == 1 ? 0 : 1);
-	if (c == '\'' && quotes != 1)
-		return (quotes == 2 ? 0 : 2);
-	return (quotes);
+    if (c == '\"' && quotes != 2)
+        return (quotes == 1 ? 0 : 1);
+    if (c == '\'' && quotes != 1)
+        return (quotes == 2 ? 0 : 2);
+    return quotes;
 }
 
-void	expander(t_token **head, t_shell *shell)
+void expander(t_token **head, t_shell *shell)
 {
-	char	*temp;
-	int		token_count;
-	t_token	*current = *head;
-
-	token_count = 0;
-	while (current)
-	{
-		token_count++;
-		current = current->next;
-	}
-	current = *head;
-	while (current)
-	{
-		if (ft_strchr(current->value, '$'))
-		{
-			if (token_count == 1 && current->value[0] == '$')
-			{
-				current = current->next;
-				continue ;
-			}
-			temp = current->value;
-			current->value = expand_variables(current->value, shell);
-			if (!current->value)
-			current->value = temp;
-			else
-				free(temp);
-		}
-		current = current->next;
-	}
+    t_token *current = *head;
+    while (current)
+    {
+        if (current->quote_type != SINGLE_QUOTES && ft_strchr(current->value, '$'))
+        {
+            char *temp = current->value;
+            current->value = expand_variables(current->value, shell);
+            if (!current->value)
+                current->value = temp;
+            else
+                free(temp);
+        }
+        current = current->next;
+    }
 }
 
 char	*ft_strjoin_with_free(char *s1, char *s2, int free_s1)
@@ -177,27 +166,32 @@ char	*ft_strjoin_with_free(char *s1, char *s2, int free_s1)
 	return (result);
 }
 
-char	*ft_strjoin_char(char *s1, char c)
+char *ft_strjoin_char(char *s1, char c)
 {
-	char	*result;
-	int		len;
-	int		i;
+    char *result;
+    size_t len, i;
 
-	if (!s1)
-		return (NULL);
-	len = ft_strlen(s1);
-	result = malloc(sizeof(char) * (len + 2));
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		result[i] = s1[i];
-		i++;
-	}
-	result[i] = c;
-	result[i + 1] = '\0';
-	free(s1);
-	return (result);
+    if (!s1)
+    {
+        result = malloc(2);
+        if (!result)
+            return NULL;
+        result[0] = c;
+        result[1] = '\0';
+        return result;
+    }
+    len = ft_strlen(s1);
+    result = malloc(len + 2);
+    if (!result)
+    {
+        free(s1);
+        return NULL;
+    }
+    for (i = 0; i < len; i++)
+        result[i] = s1[i];
+    result[len] = c;
+    result[len + 1] = '\0';
+    free(s1);
+    return result;
 }
 
