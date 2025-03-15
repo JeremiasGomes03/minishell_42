@@ -14,6 +14,7 @@ SRCS = src/main.c \
 		src/expansion.c \
 		src/builtins_two.c \
 		src/test_builtins.c \
+		src/envp.c \
 
 OBJS = $(SRCS:.c=.o)
 

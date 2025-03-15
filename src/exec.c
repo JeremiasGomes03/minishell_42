@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/05 19:45:52 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/14 18:32:03 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,23 +74,15 @@ void	execute_command(t_cmd_node *cmd, t_shell *shell)
 
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return ;
-	if (cmd->args[0][0] == '$' && cmd->args[0][1] != '\0')
-	{
-		char *var_value = get_envp(shell, cmd->args[0]);
 
-		if (var_value)
-		{
-			printf("%s\n", var_value);
-			free(var_value);
-			shell->exit_status = 0;
-		}
-		else
-		{
-			shell->exit_status = 1;
-		}
+	if (is_builtin(cmd))
+	{
+		execute_builtin(cmd, shell);
 		return ;
 	}
-	expand_command_args(cmd, shell);
+
+	expand_command_args(cmd, shell); // ✅ Agora está sendo usada
+
 	pid = fork();
 	if (pid == -1)
 	{
@@ -100,7 +92,8 @@ void	execute_command(t_cmd_node *cmd, t_shell *shell)
 	else if (pid == 0)
 	{
 		setup_child_signals();
-		execute_child(cmd);
+		execute_child(cmd); // ✅ Agora está sendo usada
+		exit(1);
 	}
 	else
 	{
@@ -108,6 +101,7 @@ void	execute_command(t_cmd_node *cmd, t_shell *shell)
 		shell->exit_status = WEXITSTATUS(status);
 	}
 }
+
 
 void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 {

@@ -1,47 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins_two.c                                     :+:      :+:    :+:   */
+/*   envp.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 20:55:24 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/14 18:30:39 by lavinia          ###   ########.fr       */
+/*   Created: 2025/03/13 19:59:29 by lavinia           #+#    #+#             */
+/*   Updated: 2025/03/13 20:47:08 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	builtin_exit(t_cmd_node *cmd)
+char	**dup_envp(char **envp)
 {
-	int	exit_code;
+	int		i;
+	char	**new_envp;
 
-	exit_code = 0;
-	if (cmd->args[1])
+	i = 0;
+	while (envp[i])
+		i++;
+	new_envp = malloc(sizeof(char *) * (i + 1));
+	if (!new_envp)
+		return (NULL);
+	i = 0;
+	while (envp[i])
 	{
-		exit_code = ft_atoi(cmd->args[1]);
-		if (!ft_isnumeric(cmd->args[1]))
-		{
-			printf("exit: %s: numeric argument required\n", cmd->args[1]);
-			exit_code = 255;
-		}
+		new_envp[i] = strdup(envp[i]);
+		i++;
 	}
-	printf("exit\n");
-	exit(exit_code);
+	new_envp[i] = NULL;
+	return (new_envp);
 }
 
-void	builtin_env(t_shell *shell)
+void	free_envp(char **envp)
 {
 	int	i;
 
-	if (!shell || !shell->envp)
+	if (!envp)
 		return ;
-
 	i = 0;
-	while (shell->envp[i])
+	while (envp[i])
 	{
-		printf("%s\n", shell->envp[i]);
+		free(envp[i]);
 		i++;
 	}
+	free(envp);
 }
-

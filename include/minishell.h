@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/10 18:47:42 by lamachad         ###   ########.fr       */
+/*   Updated: 2025/03/13 20:42:14 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void		handle_quotes(char **input, t_token **tokens, char quote);
 void		add_token(t_token **tokens, char *value, t_token_type type);
 void		handle_env_vars(char **input, t_token **tokens);
 
-
 // Tokenização Utils
 int			is_space(char c);
 int			is_operator(char c);
@@ -101,14 +100,16 @@ void		execute_pipeline(t_cmd_list *cmd_list, t_shell *shell);
 void		builtin_echo(t_cmd_node *cmd);
 void		builtin_cd(t_cmd_node *cmd);
 void		builtin_exit(t_cmd_node *cmd);
-void		builtin_export(t_cmd_node *cmd);
-void		builtin_unset(t_cmd_node *cmd);
+void		builtin_export(t_shell *shell, char *var);
+void		builtin_unset(t_shell *shell, char *var);
 void		builtin_pwd(t_cmd_node *cmd);
-void		builtin_env(t_cmd_node *cmd);
+void		builtin_env(t_shell *shell);
 extern char	**environ;
+char		**dup_envp(char **envp);
+void		free_envp(char **envp);
 
-void	execute_builtin(t_cmd_node *cmd);
-int	is_builtin(t_cmd_node *cmd);
+void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
+int			is_builtin(t_cmd_node *cmd);
 
 // Sinais
 void		handle_signal(int sig);
