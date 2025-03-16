@@ -1,38 +1,7 @@
+1 -  &&   ||
 
-1-arrumar as variaveis de ambiente quando em conjunto com outro comando ✅
+2 - minishell> echo $VAR_NAME
+    $VAR_NAME
+    minishell> 
 
-2-implementar os builtins faltantes ✅
-
-3-o programa fecha quando; unclosed quote  ✅
-
-4-segfault quando syntax error ✅
-
-5-expansao de wildcard
-
-6-bug quando Ctrl+C ✅
-
-7-norminette ✅
-
-8-implementar heredoc ✅
-
-9- 
-    c1r9p2% ls |
-    pipe> echo ls
-    ls
-
-
-10 - 
-    minishell> ls < flx_bug.txt -l
-    dup2: Bad file descriptor
-
-11 - 
-    c1r2p4% bash
-    jerda-si@c1r2p4:~/42sp.zip/github/minishell_git$ cat << oi << ola
-jsb
-oi
-ksb
-ola
-    ksb
-
-12 - considerar qualquer comando passado por aspas simples e aspas duplas como uma string normal, apenas impremi-la e nao executa-la caso for um executavel.✅
-13 - tratar os operadores logicos &&
+3 - redirecionadores errados
