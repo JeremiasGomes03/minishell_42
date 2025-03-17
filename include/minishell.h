@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 19:03:45 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:43:09 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void        handle_env_vars(char **input, t_token **tokens);
 
 
 // Tokenização Utils
-int         is_space(char c);
+int         is_space(char c);	
 int         is_operator(char c);
 int         is_quote(char c);
 void        free_tokens(t_token *tokens);

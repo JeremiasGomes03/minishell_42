@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:01:42 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 20:23:03 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:21:25 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	handle_operator(char **input, t_token **tokens)
     {
         value = ft_strdup(">");
         add_token(tokens, value, TOKEN_REDIR_OUT, NO_QUOTES);
-        (*input)++;
+        (*input)++; 
     }
 }
 

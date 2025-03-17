@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 20:57:25 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 20:49:46 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,8 +127,8 @@ char	*get_envp(t_shell *shell, char *cmd)
 		}
 		envp++;
 	}
-	var_value = ft_strdup("");
-	return (NULL);
+    free(var_name);
+    return (ft_strdup("")); 
 }
 
 int check_quotes(char c, int quotes)
@@ -157,6 +157,7 @@ void expander(t_token **head, t_shell *shell)
         current = current->next;
     }
 }
+
 
 char	*ft_strjoin_with_free(char *s1, char *s2, int free_s1)
 {
@@ -194,4 +195,3 @@ char *ft_strjoin_char(char *s1, char c)
     free(s1);
     return result;
 }
-

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:50:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 21:56:07 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 20:47:52 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int process_heredoc(t_heredoc *heredoc_data, t_shell *shell)
     int     fd;
 
     temp_file = create_temp_file();
-    content = process_input_heredoc(heredoc_data, shell); 
+    content = process_input_heredoc(heredoc_data, shell);
     fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 	{
@@ -72,14 +72,14 @@ char *process_input_heredoc(t_heredoc *heredoc_data, t_shell *shell)
             free(line);
             break;
         }
-        
         if (heredoc_data->quote_type != SINGLE_QUOTES)
         {
             expanded_line = expand_variables(line, shell);
+			if (!expanded_line)
+				return (ft_strdup(""));
             free(line);
             line = expanded_line;
         }
-        
         content = accumulate_content(content, line);
         free(line);
     }

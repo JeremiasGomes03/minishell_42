@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:08:12 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/15 18:03:31 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 20:03:29 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void parse_redirection(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
     {
         if (!(*tokens)->next || (*tokens)->next->type != TOKEN_WORD)
             exit_with_error("Redirection without file");
-        cmd->in_fd = open((*tokens)->next->value, O_RDONLY);
+        cmd->in_fd = open((*tokens)->next->value, O_WRONLY | O_TRUNC, 0644);
         if (cmd->in_fd == -1)
             exit_with_error("Failed to open input file");
         *tokens = (*tokens)->next->next;

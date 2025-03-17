@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:54:15 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 21:33:30 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 20:10:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,11 @@ int my_mkstemp(char *template)
     int fd;
 
     generate_temp_name(template);
-
-    fd = open(template, O_CREAT | O_EXCL | O_RDWR, 0600);
+    fd = open(template,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1)
     {
         perror("open");
         return (-1);
     }
-
     return (fd);
 }

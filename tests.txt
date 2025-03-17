@@ -1,3 +1,5 @@
+FUNCIONANDO:
+
 |
 <
 >
@@ -33,14 +35,8 @@ echo oi
 ls $PATH
 ls '$PATH'
 ls "$PATH"
-"$PATH" ls
-'$PATH' ls 
-$PATH ls
 'ls -l'
 "ls -l'
-"ls $PATH"
-'ls $PATH'
-'$PATH ls'
 "$PATH ls"
 $PATH ls
 '$PAT ls'
@@ -48,8 +44,6 @@ $PATH ls
 echo $PATH
 echo '$PATH'
 echo "$HOME"
-export adriel="jeremias"
-echo $adriel
 unset adriel
 echo $adriel
 cd /
@@ -61,11 +55,6 @@ ls | pwd | echo 'oi'
 ls | sort
 grep root /etc/passwd
 ls -la | grep ".c" | wc -l
-ls -la | grep ".c" > output.txt
-ls > redirect.txt
-ls | pwd | echo 'teste' > redirect_pipe.txt
-cat << eof > redirect_hrdc.txt
->a
 ls -la | grep ".c" >> tst.txt
 exit oskaokds
 Exit
@@ -74,14 +63,34 @@ exit 1
 exit '0'
 exit '1'
 $?
-cat << eof | wc -l
-cat << eof | grep "linha"
-cat << "eof"
-cat << 'eof'
-cat << eof $PATH
-cat << eof '$PATH'
-cat << eof "$PATH"
-cat << eof CTRL + D
-cat << eof CTRL + C
 cat CTRL + D
 cat CTRL + C
+
+
+
+######################################
+NAO FUNCIONANDO/RETORNO DIFERENTE
+
+-------Tratamento da variável de ambiente em combinação
+com outros comandos e (""'')------
+
+"$PATH" ls
+'$PATH' ls 
+$PATH ls
+"ls $PATH"
+'ls $PATH'
+'$PATH ls'
+
+
+
+----Erro de funcionamento-----
+
+export adriel="jeremias"
+echo $adriel
+
+
+
+---TODOS os redirirecionamentos----
+
+ls | pwd | echo 'teste' > redirect_pipe.txt
+

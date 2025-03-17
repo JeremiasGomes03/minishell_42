@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 17:56:03 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 20:33:47 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:38:57 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ t_token *tokenize_input(char *input)
         add_token(&tokens, NULL, TOKEN_EOF, NO_QUOTES);
     return tokens;
 }   
-
-
 
 
 void add_token(t_token **tokens, char *value, t_token_type type, t_quote_type quote_type)

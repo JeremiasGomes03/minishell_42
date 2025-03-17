@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/15 19:45:23 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:22:12 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,11 @@ void execute_command(t_cmd_node *cmd, t_shell *shell)
     int     status;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
-		return ;
+    {
+        fprintf(stderr, "minishell: command not found\n");
+        shell->exit_status = 127;
+        return;
+    }
 	if (is_builtin(cmd))
 	{
 		execute_builtin(cmd, shell);
