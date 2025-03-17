@@ -33,22 +33,22 @@ echo oi
 ls $PATH
 ls '$PATH'
 ls "$PATH"
-"$PATH" ls
-'$PATH' ls 
-$PATH ls
+"$PATH" ls   (revisar)
+'$PATH' ls   (revisar)
+$PATH ls     (revisar)
 'ls -l'
-"ls -l'
-"ls $PATH"
+"ls -l'      (revisar)
+"ls $PATH"   (revisar)
 'ls $PATH'
 '$PATH ls'
-"$PATH ls"
-$PATH ls
+"$PATH ls"   (revisar)
+$PATH ls     (revisar)
 '$PAT ls'
 'ls $PAT'
 echo $PATH
 echo '$PATH'
 echo "$HOME"
-export adriel="jeremias"
+export adriel="jeremias"  (revisar)
 echo $adriel
 unset adriel
 echo $adriel
