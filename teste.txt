@@ -1,0 +1,95 @@
+
+ls
+echo Hello World
+cat /etc/passwd | head -n 3
+echo "Teste" > out.txt
+cat out.txt
+cat < /etc/passwd > out.txt 2> err.log ❌
+echo "Append" >> out.txt
+echo "New" > out.txt
+ls | wc -l
+echo "Hello World" | grep Hello | wc -c ❌
+cat /etc/passwd | grep root | sort | uniq
+export VAR="Teste" ❌👍
+echo $VAR ❌👍
+unset VAR ❌👍
+echo $VAR ❌👍
+echo $PATH
+export PATH=$PATH:/usr/bin ❌👍
+echo $PATH
+echo "$HOME/test"
+echo '$HOME/test'
+cd /tmp ❌👍
+pwd
+env | grep PATH ❌👍
+cat | sleep 10
+echo "Hello 'World'"
+echo 'Hello "World"'
+echo "Escaped \"quotes\" here" ❌
+echo '$HOME'
+echo "$HOME"
+export TEST=abc ❌👍
+echo $TEST ❌👍
+echo ${TEST}def ❌👍
+echo "$HOME/path"
+echo $HOME/path
+echo "${HOME}test" ❌
+unset HOME ❌👍
+echo $HOME ❌👍
+ls | > file
+echo "unclosed quote
+< file | ls
+ls | grep .txt | wc -l > count.txt
+cat count.txt
+echo "Test" | tee file1 file2 | grep Test > out.txt ❌
+cat /etc/passwd 2> err.log | sort > out.txt ❌
+cat << EOF
+Texto aqui
+Outra linha
+EOF
+cat << 'EOF'
+$HOME
+EOF | grep $HOME
+cat << EOF > file.txt
+Linha1
+Linha2
+EOF
+cat file.txt
+ls *.txt ❌
+echo *.log ❌
+echo ~/path
+ls /nonexistent/* 2> err.log
+grep --color=always root /etc/passwd
+ls -l -a
+asdfghjkl
+!@#$%^&*()
+| | ls |
+>> file > file2 < file3
+echo "a" | cat | cat | cat | cat | cat ❌
+ls -R / | head -n 1000
+cat /dev/urandom | head -c 100000 > bigfile.txt
+rm -rf / 2> err.log
+export EVIL=$(echo "malicious") ❌👍
+echo $EVIL
+echo "test" > /dev/null
+ls /dev/null
+nano test.txt
+top
+python -c "print('Hello')"
+ls
+echo test
+history ❌
+echo test
+./test.sh
+cat out.txt
+echo "ls | wc -l" > script.sh
+bash script.sh
+./test.sh 2> err.log | grep Hello
+
+
+
+Observações: 
+1- Comportamento inesperado ao executar alguns pipes seguidos.
+2- Comportamento estranho na hora de imprimir o minishell> na tela
+3- Tratar && e ||
+4- Tratar / \

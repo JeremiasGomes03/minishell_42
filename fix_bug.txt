@@ -1,7 +1,0 @@
-1 -  &&   ||
-
-2 - minishell> echo $VAR_NAME
-    $VAR_NAME
-    minishell> 
-
-3 - redirecionadores errados

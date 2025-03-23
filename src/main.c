@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 20:17:52 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/23 18:37:23 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,60 +15,11 @@
 #include <readline/history.h>
 
 
-static void process_input(char *input, t_token **tokens, t_cmd_list **cmd_list, t_shell *shell)
-{
-    *tokens = tokenize_input(input);
-    if (!validate_syntax(*tokens))
-    {
-        printf("Erro de sintaxe\n");
-        free_tokens(*tokens);
-        *tokens = NULL;
-        *cmd_list = NULL;   
-        return;
-    }
-    t_token *first_token = *tokens;
-    if (first_token && !first_token->next && first_token->value[0] == '$')
-    {
-        char *var_value = get_envp(shell, first_token->value + 1);
-        if (var_value)
-        {
-            printf("%s\n", var_value);
-            free(var_value);
-        }
-        free_tokens(*tokens);
-        *tokens = NULL;
-        *cmd_list = NULL;
-        return;
-    }
-    expander(tokens, shell);
-    *cmd_list = parse_tokens(shell->tokens, shell);
-}
-
 static void check_and_execute_exit(t_cmd_list *cmd_list)
 {
     if (cmd_list->head && cmd_list->head->args && ft_strcmp(cmd_list->head->args[0], "exit") == 0)
     {
         builtin_exit(cmd_list->head);
-    }
-}
-
-static void execute_and_cleanup(t_cmd_list **cmd_list, char **input, t_token **tokens, t_shell *shell)
-{
-    if (*cmd_list)
-    {
-        execute_pipeline(*cmd_list, shell);
-        free_cmd_list(*cmd_list);
-        *cmd_list = NULL;
-    }
-    if (*input)
-    {
-        free(*input);
-        *input = NULL;
-    }
-    if (*tokens)
-    {
-        free_tokens(*tokens);
-        *tokens = NULL;
     }
 }
 
@@ -90,22 +41,38 @@ char *trim_whitespace(char *str)
     return str;
 }
 
+int ends_with_pipe(const char *input)
+{
+    int len;
+
+    if (!input)
+        return 0;
+    len = strlen(input);
+    while (len > 0 && isspace((unsigned char)input[len - 1]))
+        len--;
+    return (len > 0 && input[len - 1] == '|');
+}
+
 int main(int argc, char **argv, char **envp)
 {
-    char *input;
-    t_shell shell;
+    char        *input;
+    t_shell     shell;
+    t_token     *tokens;
+    t_token     *original_tokens;
 
     (void)argc;
     (void)argv;
-     
+    
     shell.envp = dup_envp(envp);
     shell.exit_status = 0;
     shell.cmd_list = NULL;
     shell.tokens = NULL;
     setup_signals();
-
     while (1)
     {
+        if (fcntl(STDIN_FILENO, F_GETFD) == -1)
+            freopen("/dev/tty", "r", stdin);
+
         input = readline("\x1b[1m\x1b[92mminishell\x1b[37m>\x1b[0m ");
         if (!input)
             break;
@@ -123,21 +90,45 @@ int main(int argc, char **argv, char **envp)
             free(input);
             continue;
         }
-        process_input(input, &shell.tokens, &shell.cmd_list, &shell);
-        if (shell.cmd_list)
+        if (ends_with_pipe(trimmed))
         {
-            check_and_execute_exit(shell.cmd_list);
-            execute_and_cleanup(&shell.cmd_list, &input, &shell.tokens, &shell);
+            write(2, "minishell: syntax error near unexpected token `|'\n",  51);
+
+            free(input);
+            continue;
         }
-        else
+        if (ft_strnstr(input, "&&", ft_strlen(input)) 
+            || ft_strnstr(input, "||", ft_strlen(input)) 
+                || ft_strnstr(input, "\\", ft_strlen(input)))
         {
-            if (input)
-                free(input);
-            if (shell.tokens)
-                free_tokens(shell.tokens);
+            write(2, "minishell: syntax error near unexpected token `&&' or `||' or `\\'\n", 67);
+            return 1;
         }
+        tokens = tokenize_input(input);
+        original_tokens = tokens;
+        if (!validate_syntax(tokens))
+        {
+            free_tokens(original_tokens);
+            free(input);
+            continue;
+        }
+        expander(&tokens, &shell);
+        shell.cmd_list = parse_tokens(original_tokens, &shell);
+        if (!shell.cmd_list)
+        {
+            freopen("/dev/tty", "r", stdin);
+            free(input);
+            continue;
+        }
+        check_and_execute_exit(shell.cmd_list);
+        execute_pipeline(shell.cmd_list, &shell);
+        free_cmd_list(shell.cmd_list);
+        shell.cmd_list = NULL;
+        free(input);
     }
     free_envp(shell.envp);
     return (0);
 }
+
+
 

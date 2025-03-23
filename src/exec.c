@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/17 19:22:12 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/23 16:40:07 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,6 @@ void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
 	}
 }
 
-static void	setup_child_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
 
 static void	execute_child(t_cmd_node *cmd)
 {
@@ -78,7 +73,7 @@ static void	execute_child(t_cmd_node *cmd)
 		close(cmd->out_fd);
 	}
 	execvp(cmd->args[0], cmd->args);
-	perror("execvp");
+	fprintf(stderr, "minishell: %s: %s\n", cmd->args[0], strerror(errno));
 	exit(EXIT_FAILURE);
 }
 
@@ -87,27 +82,25 @@ void execute_command(t_cmd_node *cmd, t_shell *shell)
     pid_t   pid;
     int     status;
 
-	if (!cmd || !cmd->args || !cmd->args[0])
+    if (!cmd || !cmd->args || !cmd->args[0])
     {
         fprintf(stderr, "minishell: command not found\n");
         shell->exit_status = 127;
         return;
     }
-	if (is_builtin(cmd))
-	{
-		execute_builtin(cmd, shell);
-		return ;
-	} 
-	pid = fork();
+    pid = fork();
     if (pid == -1)
     {
         perror("fork");
-        return ;
+        return;
     }
     else if (pid == 0)
     {
         setup_child_signals();
-        execute_child(cmd);
+        if (is_builtin(cmd))
+            execute_builtin(cmd, shell);
+        else
+            execute_child(cmd);
     }
     else
     {
@@ -115,7 +108,6 @@ void execute_command(t_cmd_node *cmd, t_shell *shell)
         shell->exit_status = WEXITSTATUS(status);
     }
 }
-
 
 void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 {
@@ -133,13 +125,9 @@ void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 			return ;
 		}
 		if (prev_pipe_in != -1)
-		{
 			cmd->in_fd = prev_pipe_in;
-		}
-		if (cmd->next)	
-		{
+		if (cmd->next)
 			cmd->out_fd = pipefd[1];
-		}
 		execute_command(cmd, shell);
 		if (prev_pipe_in != -1)
 		{

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 17:45:38 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/21 15:37:30 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,9 @@ void	ft_free_array(char **arr)
 int ft_isspace(int c)
 {
     return (c == ' '  || 
-            c == '\f' ||  // Form feed
-            c == '\n' ||  // Newline
-            c == '\r' ||  // Carriage return
-            c == '\t' ||  // Horizontal tab
-            c == '\v');   // Vertical tab
+            c == '\f' ||
+            c == '\n' ||
+            c == '\r' ||
+            c == '\t' ||
+            c == '\v');
 }

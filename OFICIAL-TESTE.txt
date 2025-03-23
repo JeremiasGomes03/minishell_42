@@ -1,0 +1,205 @@
+
+######################## FUNCIONAMENTO BÁSICO #########################
+
+-- 1. Testes de Pipes --  3/4
+--------------------------------
+✅ # Pipe simples
+ls | wc -l
+  -> Verifica a passagem correta da saída de um comando para outro.
+
+✅ # Pipeline encadeado
+ls -l | grep "\.c" | sort
+  -> Testa vários comandos conectados por pipes.
+
+✅ # Pipe com redirecionamento de saída
+cat file.txt | grep "pattern" > out.txt
+  -> Verifica se o redirecionamento preserva a saída final do pipeline.
+
+✅ # Pipe combinado com variáveis e quotes
+echo "$HOME" | tr '[:lower:]' '[:upper:]'
+  -> Testa a expansão da variável dentro de um pipeline.
+
+
+
+
+-- 2. Testes de Variáveis de Ambiente e Expansão --
+--------------------------------
+✅ # Expansão simples
+echo $HOME
+  -> Verifica se a variável de ambiente é expandida corretamente.
+
+✅ # Expansão com aspas duplas vs. simples
+echo "$PATH"
+echo '$PATH'
+  -> A primeira deve expandir; a segunda exibir o literal "$PATH".
+
+✅ # Variáveis em meio ao comando
+ls $PATH
+  -> Testa a utilização de uma variável de ambiente como parte do comando.
+
+✅ # Combinação com comando interno
+echo "User: $USER, Home: $HOME"
+  -> Verifica a concatenação de strings com variáveis.
+
+
+
+-- 3. Testes de Redirecionamento --
+--------------------------------
+✅ # Redirecionamento de saída
+    echo "Hello, world!" > output.txt
+  -> Verifica se o comando grava corretamente em um arquivo.
+
+✅ # Redirecionamento de entrada
+    cat < input.txt
+  -> Testa a leitura de um arquivo como entrada padrão.
+
+✅ # Redirecionamento com append
+    echo "Mais uma linha" >> output.txt
+  -> Confirma se a saída é anexada corretamente ao final do arquivo.
+
+✅ # Pipe combinado com redirecionamento
+   ls -l | grep "\.txt" > txt_files.txt
+  -> Verifica se o pipeline funciona corretamente com redirecionamento.
+
+
+
+-- 4. Testes de Quotes (Aspas) --
+--------------------------------
+✅ # Aspas simples (literal)
+echo 'Texto literal: $HOME'
+  -> Verifica que a variável não é expandida.
+
+✅ # Aspas duplas (com expansão)
+echo "Texto com expansão: $HOME"
+  -> Testa se a variável é expandida dentro de aspas duplas.
+
+✅ # Mistura de aspas simples e duplas
+echo 'Parte literal' " e parte expandida: $USER"
+  -> Combina comportamentos em um único comando.
+
+
+
+-- 5. Testes de Builtins e Fluxo Interno --
+--------------------------------
+✅ # Teste do builtin exit
+exit
+  -> Verifica se o minishell encerra corretamente.
+
+✅ # Comando inexistente
+comando_inexistente
+  -> Confirma se a mensagem de erro está de acordo com o esperado.
+
+✅ # Sintaxe incorreta (aspas não fechadas)
+echo "Texto sem fechamento
+  -> Testa se o minishell detecta erro de sintaxe.
+
+✅ # Redirecionamento sem arquivo
+echo "Erro" >
+  -> Verifica a resposta para redirecionamentos malformados.
+
+
+
+-- 6. Testes Combinados (Múltiplas Funcionalidades) --
+--------------------------------
+✅ # Combinação de pipes, variáveis, quotes e redirecionamento
+echo "User: $USER" | grep "User:" > user_info.txt
+  -> Testa a expansão, o pipeline e o redirecionamento em um comando só.
+
+✅ # Pipeline complexo
+ls -l | grep "^d" | wc -l > dirs_count.txt
+  -> Valida o funcionamento encadeado de vários comandos e redirecionamento.
+
+✅ # Comando com múltiplos redirecionamentos e pipes
+cat < main.c | grep "j" | sort | uniq > result.txt
+  -> Testa o fluxo completo: redirecionamento de entrada, pipeline e redirecionamento de saída.
+
+
+
+
+######################## FUNCIONAMENTO INESPERADO #########################
+
+===========================
+Testes Inesperados para Minishell
+===========================
+
+
+-- 1. Testes com Variáveis e Aspas Incomuns --
+--------------------------------
+✅ # Uso invertido: variável expandida como comando e comando como argumento
+"$PATH" ls
+  -> Espera-se que o minishell tente executar o comando cujo nome é o valor de $PATH.
+  -> Verifique se a mensagem de erro se assemelha à do bash (por exemplo, "bash: /caminho: Arquivo ou diretório inexistente").
+
+✅ # Uso de variável sem aspas em posição incomum
+ls "$HOME" "$UNDEFINED_VAR"
+  -> O primeiro token é expandido corretamente; o segundo deverá resultar em string vazia ou erro, conforme a implementação.
+
+
+
+
+-- 2. Testes com Redirecionamento Malformado --
+--------------------------------
+✅ # Redirecionamento com sintaxe errada
+>><>S::SA>ÇSA
+  -> Comando com redirecionamento totalmente inválido.
+  -> Verifique se o minishell captura o erro e não trava.
+
+✅ # Redirecionamento sem especificar arquivo de destino
+echo "Teste sem arquivo" >
+  -> Espera-se uma mensagem de erro sobre redirecionamento malformado.
+
+✅ # Múltiplos redirecionamentos de saída conflitantes
+echo "Teste conflito" > file1.txt >> file2.txt
+  -> Testa como o shell trata a presença de dois redirecionamentos de saída em sequência.
+
+
+
+
+-- 3. Testes com Pipes e Sintaxe Inválida --
+--------------------------------
+❌ # Pipe seguido de redirecionamento mal posicionado
+ ls | > out.txt
+  -> Espera-se que o minishell detecte a ausência de comando depois do pipe.
+
+❌ # Pipe com comando vazio
+| echo "Sem comando antes do pipe"
+  -> O minishell deve avisar que o comando não foi encontrado ou sinalizar erro de sintaxe.
+
+✅ # Pipeline com tokens inesperados no meio
+  ls | $$ | wc -l
+  -> O token "$$" pode não ser interpretado corretamente. Verifique se o shell trata o token como inválido ou literal.
+
+
+
+
+-- 4. Testes com Uso Incomum de Caracteres Especiais --
+--------------------------------
+✅ # Comando com caracteres especiais não escapados
+echo Hello; rm -rf /
+  -> Verifique se o minishell trata o ponto-e-vírgula como separador (se implementado) ou apenas como parte do comando.
+  -> Importante: não execute esse comando em um ambiente real!
+
+✅ # Comando com mistura de aspas e caracteres incomuns
+echo "'\"$USER\"'" | tr '[:lower:]' '[:upper:]'
+  -> Testa como o shell lida com a combinação de aspas simples e duplas aninhadas.
+
+
+
+
+-- 5. Testes de Tokens e Comandos Vazios --
+--------------------------------
+✅ # Linha em branco ou somente espaços
+     
+  -> O minishell deve ignorar e não processar nenhum comando.
+
+✅ # Comando vazio seguido de pipe
+"" | ls
+  -> Teste se o minishell consegue detectar comando vazio.
+
+✅ # Apenas um redirecionamento sem comando
+> out.txt
+  -> Verifique se o shell emite erro apropriado de sintaxe.
+
+===========================
+Fim da Lista de Testes Inesperados
+===========================

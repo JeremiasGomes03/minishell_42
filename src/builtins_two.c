@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_two.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 20:55:24 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/14 18:30:39 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/19 19:18:18 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	builtin_exit(t_cmd_node *cmd)
 			exit_code = 255;
 		}
 	}
-	printf("exit\n");
 	exit(exit_code);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/17 20:49:46 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/20 16:28:06 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,3 +195,6 @@ char *ft_strjoin_char(char *s1, char c)
     free(s1);
     return result;
 }
+
+
+
