@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/14 20:57:25 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/24 19:29:36 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char    *expand_variables(char *cmd, t_shell *shell)
+char *expand_variables(char *cmd, t_shell *shell)
 {
     char    *result;
     char    *var_name;
@@ -27,6 +27,7 @@ char    *expand_variables(char *cmd, t_shell *shell)
     result = ft_strdup("");
     if (!result)
         return (NULL);
+
     while (cmd[i])
     {
         quotes = check_quotes(cmd[i], quotes);
@@ -36,21 +37,31 @@ char    *expand_variables(char *cmd, t_shell *shell)
             if (cmd[i] == '?')
             {
                 var_value = ft_itoa(shell->exit_status);
+                if (!var_value)
+                    return (NULL);
                 result = ft_strjoin_with_free(result, var_value, 1);
                 free(var_value);
                 i++;
             }
             else
             {
-                var_name = NULL;
+                var_name = ft_strdup("");
+                if (!var_name)
+                    return (NULL);
+
                 while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
                 {
                     var_name = ft_strjoin_char(var_name, cmd[i]);
+                    if (!var_name)
+                        return (NULL);
                     i++;
                 }
-                if (var_name)
+
+                if (ft_strlen(var_name) > 0)
                 {
                     var_value = get_envp(shell, var_name);
+                    if (!var_value)
+                        var_value = ft_strdup("");
                     if (!var_value)
                     {
                         free(var_name);
@@ -58,8 +69,8 @@ char    *expand_variables(char *cmd, t_shell *shell)
                     }
                     result = ft_strjoin_with_free(result, var_value, 1);
                     free(var_value);
-                    free(var_name);
                 }
+                free(var_name);
             }
         }
         else
@@ -72,7 +83,6 @@ char    *expand_variables(char *cmd, t_shell *shell)
     }
     return (result);
 }
-
 
 static int	ft_findchr(char *str, char c)
 {
@@ -87,7 +97,6 @@ static int	ft_findchr(char *str, char c)
 	}
 	return (-1);
 }
-
 
 char	*get_envp(t_shell *shell, char *cmd)
 {
@@ -127,8 +136,8 @@ char	*get_envp(t_shell *shell, char *cmd)
 		}
 		envp++;
 	}
-	var_value = ft_strdup("");
-	return (NULL);
+	free(var_name);
+	return (ft_strdup(""));
 }
 
 int check_quotes(char c, int quotes)

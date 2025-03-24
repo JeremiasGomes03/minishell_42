@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 20:17:52 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/24 20:33:20 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,12 @@ char *trim_whitespace(char *str)
 int main(int argc, char **argv, char **envp)
 {
     char *input;
+    char *expanded;
     t_shell shell;
 
     (void)argc;
     (void)argv;
-     
+
     shell.envp = dup_envp(envp);
     shell.exit_status = 0;
     shell.cmd_list = NULL;
@@ -111,6 +112,7 @@ int main(int argc, char **argv, char **envp)
             break;
         if (*input)
             add_history(input);
+
         char *trimmed = trim_whitespace(input);
         if (ft_strcmp(trimmed, "$PATH") == 0)
         {
@@ -123,20 +125,28 @@ int main(int argc, char **argv, char **envp)
             free(input);
             continue;
         }
-        process_input(input, &shell.tokens, &shell.cmd_list, &shell);
+
+        expanded = expand_variables(input, &shell);
+        free(input);
+        if (!expanded)
+            continue;
+
+        process_input(expanded, &shell.tokens, &shell.cmd_list, &shell);
+        
+        // ❌ REMOVIDO: free(expanded);
+        // ✅ Delega o free para a função abaixo
         if (shell.cmd_list)
         {
             check_and_execute_exit(shell.cmd_list);
-            execute_and_cleanup(&shell.cmd_list, &input, &shell.tokens, &shell);
+            execute_and_cleanup(&shell.cmd_list, &expanded, &shell.tokens, &shell);
         }
         else
         {
-            if (input)
-                free(input);
             if (shell.tokens)
                 free_tokens(shell.tokens);
         }
     }
+
     free_envp(shell.envp);
     return (0);
 }

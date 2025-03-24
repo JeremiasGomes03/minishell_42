@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 19:03:45 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/24 19:15:53 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,8 @@ void		builtin_env(t_shell *shell);
 extern char	**environ;
 char		**dup_envp(char **envp);
 void		free_envp(char **envp);
+void 		export_list(t_shell *shell);
+void 		export_add_or_replace(t_shell *shell, char *var);
 
 void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
 int			is_builtin(t_cmd_node *cmd);

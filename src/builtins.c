@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/15 16:18:36 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/24 20:32:20 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,32 +49,16 @@ void	builtin_cd(t_cmd_node *cmd)
 		perror("cd");
 }
 
-void	builtin_export(t_shell *shell, char *var)
+void builtin_export(t_shell *shell, char *var)
 {
-	char	**new_envp;
-	int		i;
+	if (!shell)
+		return;
 
-	if (!shell || !var)
-		return ;
-	i = 0;
-	while (shell->envp[i])
-		i++;
-	new_envp = malloc(sizeof(char *) * (i + 2));
-	if (!new_envp)
-		return ;
-	i = 0;
-	while (shell->envp[i])
-	{
-		new_envp[i] = shell->envp[i]; // Mantém as variáveis antigas
-		i++;
-	}
-	new_envp[i] = strdup(var); // Adiciona a nova variável
-	new_envp[i + 1] = NULL;
-
-	free(shell->envp);
-	shell->envp = new_envp;
+	if (!var)
+		export_list(shell);
+	else
+		export_add_or_replace(shell, var);
 }
-
 
 void	builtin_unset(t_shell *shell, char *var)
 {
@@ -115,7 +99,6 @@ void	builtin_unset(t_shell *shell, char *var)
 	free(shell->envp);
 	shell->envp = new_envp;
 }
-
 
 void	builtin_pwd(t_cmd_node *cmd)
 {
