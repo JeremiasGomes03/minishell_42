@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/23 16:32:50 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:17:50 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_cmd_list
 {
 	t_cmd_node  *head;
 	t_cmd_node  *tail;
+	int			size;
 } t_cmd_list;
 
 typedef struct s_shell
@@ -112,8 +113,6 @@ void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node *create_cmd_node(void);
 void        add_arg_to_cmd(t_cmd_node *cmd, char *arg);
 int         ft_isnumeric(char *str);
-int			handle_redir_out(t_cmd_node *cmd, t_token **tokens, int append, t_shell *shell);
-int			handle_redir_in(t_cmd_node *cmd, t_token **tokens, t_shell *shell);
 
 //Process_heredoc
 int		process_heredoc(t_heredoc *heredoc_data, t_shell *shell);
@@ -147,26 +146,29 @@ void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
 int			is_builtin(t_cmd_node *cmd);
 
 // Sinais
-void		handle_signal(int sig);
+void	handle_sigint(int sig);
 void		setup_signals(void);
 void		handle_eof(void);
 void		setup_child_signals(void);
+void		sigint_handler(int sig);
 
 // Expansion
-char        *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
+char	*ft_strjoin_with_free(char *s1, const char *s2, int free_s1);
 void		expander(t_token **head, t_shell *shell); 
 int         check_quotes(char c, int quotes);
 char        *expand_variables(char *cmd, t_shell *shell);
 char        *ft_strjoin_char(char *s1, char c);
 char        *get_envp(t_shell *shell, char *cmd);
+int			ft_findchr(char *str, char c);
 
 // Utils
 void        exit_with_error(char *msg);
 void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node  *create_cmd_node(void);
-int         validate_syntax(t_token *tokens);
+int	validate_syntax(t_token *tokens);
 char **ft_arrdup(char **arr);
 void ft_free_array(char **arr);
 int ft_isspace(int c);
 void	expand_command_args(t_cmd_node *cmd, t_shell *shell);
+void free_cmd_node(t_cmd_node *cmd);
 #endif

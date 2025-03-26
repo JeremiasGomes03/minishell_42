@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/23 18:37:23 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/26 18:02:09 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,8 @@ int main(int argc, char **argv, char **envp)
     t_shell     shell;
     t_token     *tokens;
     t_token     *original_tokens;
-
     (void)argc;
     (void)argv;
-    
     shell.envp = dup_envp(envp);
     shell.exit_status = 0;
     shell.cmd_list = NULL;
@@ -70,9 +68,6 @@ int main(int argc, char **argv, char **envp)
     setup_signals();
     while (1)
     {
-        if (fcntl(STDIN_FILENO, F_GETFD) == -1)
-            freopen("/dev/tty", "r", stdin);
-
         input = readline("\x1b[1m\x1b[92mminishell\x1b[37m>\x1b[0m ");
         if (!input)
             break;
@@ -102,7 +97,8 @@ int main(int argc, char **argv, char **envp)
                 || ft_strnstr(input, "\\", ft_strlen(input)))
         {
             write(2, "minishell: syntax error near unexpected token `&&' or `||' or `\\'\n", 67);
-            return 1;
+            free(input);
+            continue;
         }
         tokens = tokenize_input(input);
         original_tokens = tokens;
@@ -116,7 +112,13 @@ int main(int argc, char **argv, char **envp)
         shell.cmd_list = parse_tokens(original_tokens, &shell);
         if (!shell.cmd_list)
         {
-            freopen("/dev/tty", "r", stdin);
+            close(STDIN_FILENO);
+            int new_stdin = open("/dev/tty", O_RDONLY);
+            if (new_stdin != -1)
+            {
+                dup2(new_stdin, STDIN_FILENO);
+                close(new_stdin);
+            }
             free(input);
             continue;
         }
@@ -129,6 +131,5 @@ int main(int argc, char **argv, char **envp)
     free_envp(shell.envp);
     return (0);
 }
-
 
 

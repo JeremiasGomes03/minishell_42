@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/21 15:37:30 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:05:33 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	exit_with_error(char *msg)
 
 int	is_redirection(t_token_type type)
 {
-	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT ||
-		type == TOKEN_APPEND || type == TOKEN_HEREDOC);
+	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT
+		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
 
 int	validate_syntax(t_token *tokens)
@@ -43,7 +43,7 @@ int	validate_syntax(t_token *tokens)
 		{
 			if (!current->next || current->next->type != TOKEN_WORD)
 			{
-				printf("Syntax error near unexpected token `%s'\n", current->value);
+				printf("Syntax error unexpected token `%s'\n", current->value);
 				return (0);
 			}
 		}
@@ -78,12 +78,9 @@ void	ft_free_array(char **arr)
 	free(arr);
 }
 
-int ft_isspace(int c)
+int	ft_isspace(int c)
 {
-    return (c == ' '  || 
-            c == '\f' ||
-            c == '\n' ||
-            c == '\r' ||
-            c == '\t' ||
-            c == '\v');
+	return (c == ' '
+		|| c == '\f' || c == '\n' || c == '\r'
+		|| c == '\t' || c == '\v');
 }

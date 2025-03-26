@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 14:55:09 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/15 18:22:24 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:19:36 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,5 @@ char            *ft_strjoin(const char *s1, const char *s2);
 char			*ft_itoa(int n);
 char			**ft_split(char const *s, char c);
 int             ft_strcmp(const char *s1, const char *s2);
-char            *ft_strjoin_with_free(char *s1, char *s2, int free_s1);
 
 #endif 

@@ -11,6 +11,7 @@ SRCS = src/main.c \
 		src/exec.c \
 		src/utils.c \
 		src/signal.c \
+		src/expansion_utils.c \
 		src/expansion.c \
 		src/builtins_two.c \
 		src/test_builtins.c \

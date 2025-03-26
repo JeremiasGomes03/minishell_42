@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:54:15 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/17 20:10:04 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/25 21:59:19 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char	*accumulate_content(char *content, char *line)
 	return (final_content);
 }
 
-
 char	*read_input_line(void)
 {
 	char	*line;	
@@ -48,37 +47,45 @@ char	*read_input_line(void)
 	return (line);
 }
 
-
-static char get_random_char(void)
+static char	get_random_char(void)
 {
-    const char *charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    int index = rand() % 62;
-    return charset[index];
+	const char				*charset;
+	static unsigned long	counter;
+	size_t					charset_len;
+	size_t					index;
+
+	counter = 0;
+	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	charset_len = 62;
+	counter++;
+	index = counter % charset_len;
+	return (charset[index]);
 }
 
-static void generate_temp_name(char *template)
+static void	generate_temp_name(char *template)
 {
-    int i;
-    char *ptr = template + strlen(template) - 6;
+	int		i;
+	char	*ptr;
 
-    i = 0;
-    while (i < 6)
-    {
-        ptr[i] = get_random_char();
-        i++;
-    }
+	ptr = template + strlen(template) - 6;
+	i = 0;
+	while (i < 6)
+	{
+		ptr[i] = get_random_char();
+		i++;
+	}
 }
 
-int my_mkstemp(char *template)
+int	my_mkstemp(char *template)
 {
-    int fd;
+	int	fd;
 
-    generate_temp_name(template);
-    fd = open(template,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (fd == -1)
-    {
-        perror("open");
-        return (-1);
-    }
-    return (fd);
+	generate_temp_name(template);
+	fd = open(template, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		perror("open");
+		return (-1);
+	}
+	return (fd);
 }

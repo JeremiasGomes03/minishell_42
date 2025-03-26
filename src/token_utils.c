@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 21:40:09 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/15 18:06:40 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:07:43 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,15 @@ int	is_quote(char c)
 	return (c == '\'' || c == '"');
 }
 
-void	free_tokens(t_token *tokens)
+void free_tokens(t_token *tokens)
 {
-    t_token *current = tokens;
-    t_token *next;
-	
-    while (current)
-    {
-        next = current->next;
-        free(current->value);
-        free(current);
-        current = next;
+    t_token *temp;
+    while (tokens)
+	{
+        temp = tokens;
+        tokens = tokens->next;
+        free(temp->value);
+        free(temp);
     }
 }
 
@@ -57,4 +55,4 @@ char	*get_quoted_literal(char **input, char quote)
 	literal = ft_substr(start + 1, 0, len);
 	(*input)++;
 	return (literal);
-}   
+}

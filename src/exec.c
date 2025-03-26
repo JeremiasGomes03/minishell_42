@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/23 16:40:07 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/26 17:16:27 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
 	}
 }
 
-
 static void	execute_child(t_cmd_node *cmd)
 {
 	setup_child_signals();
@@ -88,6 +87,12 @@ void execute_command(t_cmd_node *cmd, t_shell *shell)
         shell->exit_status = 127;
         return;
     }
+	if (cmd->in_fd == -1)
+    {
+        fprintf(stderr, "minishell: No such file or directory\n");
+        shell->exit_status = 1;
+        return;
+    }
     pid = fork();
     if (pid == -1)
     {
@@ -109,40 +114,89 @@ void execute_command(t_cmd_node *cmd, t_shell *shell)
     }
 }
 
-void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
+void execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 {
-	int			pipefd[2];
-	t_cmd_node	*cmd;
-	int			prev_pipe_in;
+    pid_t *pids;
+    int pipefd[2], prev_pipe_in = -1, i = 0, valid_cmds = 0;
+    t_cmd_node *cmd = cmd_list->head;
 
-	cmd = cmd_list->head;
-	prev_pipe_in = -1;
-	while (cmd)
-	{
-		if (cmd->next && pipe(pipefd) == -1)
-		{
-			perror("pipe");
-			return ;
-		}
-		if (prev_pipe_in != -1)
-			cmd->in_fd = prev_pipe_in;
-		if (cmd->next)
-			cmd->out_fd = pipefd[1];
-		execute_command(cmd, shell);
-		if (prev_pipe_in != -1)
-		{
-			close(prev_pipe_in);
-			prev_pipe_in = -1;
-		}
-		if (cmd->next)
-		{
-			close(pipefd[1]);
-			prev_pipe_in = pipefd[0];
-		}
-		cmd = cmd->next;
-	}
-	if (prev_pipe_in != -1)
-	{
-		close(prev_pipe_in);
-	}
+    if (!cmd)
+        return;
+    pids = malloc(sizeof(pid_t) * cmd_list->size);
+    if (!pids)
+        exit_with_error("Failed to allocate memory for pids");
+    while (cmd)
+    {
+        if (!cmd->args || !cmd->args[0])
+        {
+            cmd = cmd->next;
+            continue;
+        }
+        if (cmd->next && pipe(pipefd) == -1)
+        {
+            perror("pipe");
+            free(pids);
+            return;
+        }
+        pid_t pid = fork();
+        if (pid == 0)
+        {
+            setup_child_signals();
+            if (prev_pipe_in != -1)
+            {
+                dup2(prev_pipe_in, STDIN_FILENO);
+                close(prev_pipe_in);
+            }
+            if (cmd->next)
+            {
+                dup2(pipefd[1], STDOUT_FILENO);
+                close(pipefd[1]);
+            }
+            if (cmd->out_fd != STDOUT_FILENO)
+            {
+                dup2(cmd->out_fd, STDOUT_FILENO);
+                close(cmd->out_fd);
+            }
+            if (cmd->in_fd != STDIN_FILENO)
+            {
+                dup2(cmd->in_fd, STDIN_FILENO);
+                close(cmd->in_fd);
+            }
+            close(pipefd[0]);
+
+            if (!cmd->args || !cmd->args[0])
+            {
+                fprintf(stderr, "minishell: invalid command\n");
+                exit(1);
+            }  
+            execvp(cmd->args[0], cmd->args);
+            perror("execvp");
+            exit(1);
+        }
+        else if (pid > 0)
+        {
+            pids[i++] = pid;
+            valid_cmds++;
+        }
+        if (prev_pipe_in != -1)
+            close(prev_pipe_in);
+        if (cmd->next)
+            close(pipefd[1]);
+        prev_pipe_in = cmd->next ? pipefd[0] : -1;
+        cmd = cmd->next;
+    }
+    int j = 0, status;
+    while (j < i)
+    {
+        waitpid(pids[j], &status, 0);
+        if (j == i - 1)
+        {
+            if (WIFEXITED(status))
+                shell->exit_status = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                shell->exit_status = 128 + WTERMSIG(status);
+        }
+        j++;
+    }
+    free(pids);
 }
