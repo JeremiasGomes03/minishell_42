@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 20:55:24 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/27 09:01:51 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/27 10:48:45 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ static int	count_env_vars(char **envp, char *var)
 	int	len;
 
 	count = 0;
-	len = strlen(var);
+	len = ft_strlen(var);
 	while (envp[count])
 	{
-		if (strncmp(envp[count], var, len) == 0 && envp[count][len] == '=')
+		if (ft_strncmp(envp[count], var, len) == 0 && envp[count][len] == '=')
 			return (count);
 		count++;
 	}
