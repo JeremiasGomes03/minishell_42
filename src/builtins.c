@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/26 21:00:58 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/27 09:12:41 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,67 +49,22 @@ void	builtin_cd(t_cmd_node *cmd)
 		perror("cd");
 }
 
-void builtin_export(t_shell *shell, char *var)
+void	builtin_export(t_shell *shell, char *var)
 {
-    if (!shell)
-        return;
+	char	*cleaned_var;
 
-    // Se não há variável, lista as variáveis de ambiente
-    if (!var)
-    {
-        export_list(shell);
-    }
-    else
-    {
-        // Sanitizar a variável para remover as aspas, se houver
-        char *cleaned_var = sanitize_export_arg(var);
-
-        // Passar a variável limpa para a função que adiciona ou substitui
-        export_add_or_replace(shell, cleaned_var);
-
-        // Liberar a memória da variável limpa
-        free(cleaned_var);
-    }
-}
-
-void	builtin_unset(t_shell *shell, char *var)
-{
-	char	**new_envp;
-	int		i;
-	int		j;
-	int		len;
-
-	if (!shell || !var)
+	if (!shell)
 		return ;
-	len = strlen(var);
-	i = 0;
-	while (shell->envp[i])
+	if (!var)
 	{
-		if (strncmp(shell->envp[i], var, len) == 0 && shell->envp[i][len] == '=')
-			break ;
-		i++;
+		export_list(shell);
 	}
-	if (!shell->envp[i])
-		return ;
-	new_envp = malloc(sizeof(char *) * i);
-	if (!new_envp)
-		return ;
-	j = 0;
-	i = 0;
-	while (shell->envp[i])
+	else
 	{
-		if (strncmp(shell->envp[i], var, len) == 0 && shell->envp[i][len] == '=')
-			free(shell->envp[i]);
-		else
-		{
-			new_envp[j] = shell->envp[i];
-			j++;
-		}
-		i++;
+		cleaned_var = sanitize_export_arg(var);
+		export_add_or_replace(shell, cleaned_var);
+		free(cleaned_var);
 	}
-	new_envp[j] = NULL;
-	free(shell->envp);
-	shell->envp = new_envp;
 }
 
 void	builtin_pwd(t_cmd_node *cmd)
@@ -125,4 +80,22 @@ void	builtin_pwd(t_cmd_node *cmd)
 	}
 	else
 		perror("pwd");
+}
+
+void	builtin_exit(t_cmd_node *cmd)
+{
+	int	exit_code;
+
+	exit_code = 0;
+	if (cmd->args[1])
+	{
+		exit_code = ft_atoi(cmd->args[1]);
+		if (!ft_isnumeric(cmd->args[1]))
+		{
+			printf("exit: %s: numeric argument required\n", cmd->args[1]);
+			exit_code = 255;
+		}
+	}
+	printf("exit\n");
+	exit(exit_code);
 }

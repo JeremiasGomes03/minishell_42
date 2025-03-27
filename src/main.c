@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/27 08:47:18 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/27 09:34:53 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 #include <readline/history.h>
 
 
-static void process_input(char *input, t_token **tokens, t_cmd_list **cmd_list, t_shell *shell)
+static  void process_input(char *input, t_token **tokens, t_cmd_list **cmd_list, t_shell *shell)
 {
-    *tokens = tokenize_input(input);
-    if (!validate_syntax(*tokens))
-    {
-        printf("Erro de sintaxe\n");
-        free_tokens(*tokens);
-        *tokens = NULL;
-        *cmd_list = NULL;   
-        return;
+	*tokens = tokenize_input(input);
+	if (!validate_syntax(*tokens))
+	{
+		printf("Erro de sintaxe\n");
+		free_tokens(*tokens);
+		*tokens = NULL;
+		*cmd_list = NULL;   
+		return ;
     }
     t_token *first_token = *tokens;
     if (first_token && !first_token->next && first_token->value[0] == '$')
@@ -98,13 +98,11 @@ int main(int argc, char **argv, char **envp)
 
     (void)argc;
     (void)argv;
-
     shell.envp = dup_envp(envp);
     shell.exit_status = 0;
     shell.cmd_list = NULL;
     shell.tokens = NULL;
     setup_signals();
-
     while (1)
     {
         input = readline("\x1b[1m\x1b[92mminishell\x1b[37m>\x1b[0m ");
@@ -125,12 +123,10 @@ int main(int argc, char **argv, char **envp)
             free(input);
             continue;
         }
-
         expanded = expand_variables(input, &shell);
         free(input);
         if (!expanded)
             continue;
-
         process_input(expanded, &shell.tokens, &shell.cmd_list, &shell);
         if (shell.cmd_list)
         {
@@ -143,7 +139,6 @@ int main(int argc, char **argv, char **envp)
                 free_tokens(shell.tokens);
         }
     }
-
     free_envp(shell.envp);
     return (0);
 }

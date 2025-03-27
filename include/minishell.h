@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/26 20:41:44 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/27 08:57:50 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ typedef struct s_cmd_list
 
 typedef struct s_shell
 {
-	t_token     *tokens;      // Lista de tokens
-	t_cmd_list  *cmd_list;    // Lista de comandos
-	char        **envp;       // Ambiente
-	int         exit_status;  // Status de saída
+	t_token     *tokens;
+	t_cmd_list  *cmd_list;
+	char        **envp;
+	int         exit_status;
 }   t_shell;
 
 // Tokenização
@@ -113,16 +113,16 @@ void        add_arg_to_cmd(t_cmd_node *cmd, char *arg);
 int         ft_isnumeric(char *str);
 
 //Process_heredoc
-int		process_heredoc(t_heredoc *heredoc_data, t_shell *shell);
-char	*create_temp_file(void);
-char *process_input_heredoc(t_heredoc *heredoc_data, t_shell *shell);
-void	write_content_to_temp_file(int fd, char *content);
-int     open_temp_file_for_reading(char *temp_file);
+int			process_heredoc(t_heredoc *heredoc_data, t_shell *shell);
+char		*create_temp_file(void);
+char		*process_input_heredoc(t_heredoc *heredoc_data, t_shell *shell);
+void		write_content_to_temp_file(int fd, char *content);
+int			open_temp_file_for_reading(char *temp_file);
 
 //Process_heredoc_utils
-char	*accumulate_content(char *content, char *line);
-char	*read_input_line(void);
-int     my_mkstemp(char *template);
+char		*accumulate_content(char *content, char *line);
+char		*read_input_line(void);
+int     	my_mkstemp(char *template);
 
 // Execução
 void		execute_command(t_cmd_node *cmd, t_shell *shell);
@@ -137,11 +137,12 @@ void		builtin_unset(t_shell *shell, char *var);
 void		builtin_pwd(t_cmd_node *cmd);
 void		builtin_env(t_shell *shell);
 extern char	**environ;
+
+//Builtins utils
 char		**dup_envp(char **envp);
 void		free_envp(char **envp);
 void 		export_list(t_shell *shell);
 void 		export_add_or_replace(t_shell *shell, char *var);
-
 void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
 int			is_builtin(t_cmd_node *cmd);
 char 		*sanitize_export_arg(char *arg);
@@ -164,8 +165,8 @@ void        exit_with_error(char *msg);
 void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node  *create_cmd_node(void);
 int         validate_syntax(t_token *tokens);
-char **ft_arrdup(char **arr);
-void ft_free_array(char **arr);
-int ft_isspace(int c);
-void	expand_command_args(t_cmd_node *cmd, t_shell *shell);
+char 		**ft_arrdup(char **arr);
+void 		ft_free_array(char **arr);
+int 		ft_isspace(int c);
+void		expand_command_args(t_cmd_node *cmd, t_shell *shell);
 #endif
