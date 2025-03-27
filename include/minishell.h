@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/24 19:15:53 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/26 20:41:44 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ void 		export_add_or_replace(t_shell *shell, char *var);
 
 void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
 int			is_builtin(t_cmd_node *cmd);
+char 		*sanitize_export_arg(char *arg);
 
 // Sinais
 void		handle_signal(int sig);

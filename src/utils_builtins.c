@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 17:30:03 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/24 19:15:56 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/26 21:00:17 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,29 @@ void export_add_or_replace(t_shell *shell, char *var)
 	}
 	free(shell->envp);
 	shell->envp = new_envp;
+}
+
+char *sanitize_export_arg(char *arg)
+{
+    int len;
+
+    if (!arg)
+        return NULL;
+
+    len = ft_strlen(arg);
+
+    // Verifica se começa e termina com aspas duplas (")
+    if (arg[0] == '"' && arg[len - 1] == '"')
+    {
+        return ft_substr(arg, 1, len - 2); // Remove as aspas duplas
+    }
+
+    // Verifica se começa e termina com aspas simples (')
+    if (arg[0] == '\'' && arg[len - 1] == '\'')
+    {
+        return ft_substr(arg, 1, len - 2); // Remove as aspas simples
+    }
+
+    // Caso não haja aspas, retorna a string original
+    return ft_strdup(arg);
 }

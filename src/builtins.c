@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/24 20:32:20 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/26 21:00:58 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,25 @@ void	builtin_cd(t_cmd_node *cmd)
 
 void builtin_export(t_shell *shell, char *var)
 {
-	if (!shell)
-		return;
+    if (!shell)
+        return;
 
-	if (!var)
-		export_list(shell);
-	else
-		export_add_or_replace(shell, var);
+    // Se não há variável, lista as variáveis de ambiente
+    if (!var)
+    {
+        export_list(shell);
+    }
+    else
+    {
+        // Sanitizar a variável para remover as aspas, se houver
+        char *cleaned_var = sanitize_export_arg(var);
+
+        // Passar a variável limpa para a função que adiciona ou substitui
+        export_add_or_replace(shell, cleaned_var);
+
+        // Liberar a memória da variável limpa
+        free(cleaned_var);
+    }
 }
 
 void	builtin_unset(t_shell *shell, char *var)

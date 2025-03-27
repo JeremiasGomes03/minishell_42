@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/24 20:33:20 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/27 08:47:18 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,6 @@ int main(int argc, char **argv, char **envp)
             continue;
 
         process_input(expanded, &shell.tokens, &shell.cmd_list, &shell);
-        
-        // ❌ REMOVIDO: free(expanded);
-        // ✅ Delega o free para a função abaixo
         if (shell.cmd_list)
         {
             check_and_execute_exit(shell.cmd_list);
