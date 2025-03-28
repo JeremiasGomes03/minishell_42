@@ -6,7 +6,7 @@
 /*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/15 16:18:36 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/27 09:12:41 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,71 +51,21 @@ void	builtin_cd(t_cmd_node *cmd)
 
 void	builtin_export(t_shell *shell, char *var)
 {
-	char	**new_envp;
-	int		i;
+	char	*cleaned_var;
 
-	if (!shell || !var)
+	if (!shell)
 		return ;
-	i = 0;
-	while (shell->envp[i])
-		i++;
-	new_envp = malloc(sizeof(char *) * (i + 2));
-	if (!new_envp)
-		return ;
-	i = 0;
-	while (shell->envp[i])
+	if (!var)
 	{
-		new_envp[i] = shell->envp[i]; // Mantém as variáveis antigas
-		i++;
+		export_list(shell);
 	}
-	new_envp[i] = strdup(var); // Adiciona a nova variável
-	new_envp[i + 1] = NULL;
-
-	free(shell->envp);
-	shell->envp = new_envp;
+	else
+	{
+		cleaned_var = sanitize_export_arg(var);
+		export_add_or_replace(shell, cleaned_var);
+		free(cleaned_var);
+	}
 }
-
-
-void	builtin_unset(t_shell *shell, char *var)
-{
-	char	**new_envp;
-	int		i;
-	int		j;
-	int		len;
-
-	if (!shell || !var)
-		return ;
-	len = strlen(var);
-	i = 0;
-	while (shell->envp[i])
-	{
-		if (strncmp(shell->envp[i], var, len) == 0 && shell->envp[i][len] == '=')
-			break ;
-		i++;
-	}
-	if (!shell->envp[i])
-		return ;
-	new_envp = malloc(sizeof(char *) * i);
-	if (!new_envp)
-		return ;
-	j = 0;
-	i = 0;
-	while (shell->envp[i])
-	{
-		if (strncmp(shell->envp[i], var, len) == 0 && shell->envp[i][len] == '=')
-			free(shell->envp[i]);
-		else
-		{
-			new_envp[j] = shell->envp[i];
-			j++;
-		}
-		i++;
-	}
-	new_envp[j] = NULL;
-	free(shell->envp);
-	shell->envp = new_envp;
-}
-
 
 void	builtin_pwd(t_cmd_node *cmd)
 {
@@ -130,4 +80,22 @@ void	builtin_pwd(t_cmd_node *cmd)
 	}
 	else
 		perror("pwd");
+}
+
+void	builtin_exit(t_cmd_node *cmd)
+{
+	int	exit_code;
+
+	exit_code = 0;
+	if (cmd->args[1])
+	{
+		exit_code = ft_atoi(cmd->args[1]);
+		if (!ft_isnumeric(cmd->args[1]))
+		{
+			printf("exit: %s: numeric argument required\n", cmd->args[1]);
+			exit_code = 255;
+		}
+	}
+	printf("exit\n");
+	exit(exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 13:53:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/26 19:06:24 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 15:00:19 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ void	expander(t_token **head, t_shell *shell)
 
 char	*ft_strjoin_with_free(char *s1, const char *s2, int free_s1)
 {
-	char *result;
+	char	*result;
 
 	result = ft_strjoin(s1, s2);
-	if (free_s1) 
+	if (free_s1)
 		free(s1);
-	return result;
+	return (result);
 }
 
 char	*ft_strjoin_char(char *s1, char c)

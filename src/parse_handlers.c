@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:08:12 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/26 18:03:36 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 14:54:40 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,37 +76,33 @@ static int	handle_heredoc(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
 	return (cmd->in_fd != -1);
 }
 
-static int handle_redir_in(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
+static int	handle_redir_in(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
 {
-    char *filename;
-    int fd;
+	char	*filename;
+	int		fd;
 
-    if (!(*tokens)->next || (*tokens)->next->type != TOKEN_WORD)
-    {
-        fprintf(stderr, "minishell: no file to redirect\n");
-        shell->exit_status = 1;
-        return (0);
-    }
-    filename = ft_strdup((*tokens)->next->value);
-    if (!expand_redirectio_fname(&filename, (*tokens)->next->quote_type, shell))
-    {
-        free(filename);
-        return (0);
-    }
-    fd = open(filename, O_RDONLY);
-    if (fd == -1)
-    {
-        fprintf(stderr, "minishell: %s: No such file or directory\n", filename);
-        shell->exit_status = 1;
-        free(filename);
-        cmd->in_fd = open("/dev/null", O_RDONLY);
-        *tokens = (*tokens)->next->next;
-        return (1);
-    }
-    free(filename);
-    cmd->in_fd = fd;
-    *tokens = (*tokens)->next->next;
-    return (1);
+	if (!(*tokens)->next || (*tokens)->next->type != TOKEN_WORD)
+	{
+		shell->exit_status = 1;
+		return (0);
+	}
+	filename = ft_strdup((*tokens)->next->value);
+	if (!expand_redirectio_fname(&filename, (*tokens)->next->quote_type, shell))
+		return (free(filename), 0);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		fprintf(stderr, "minishell: %s: No such file or directory\n", filename);
+		shell->exit_status = 1;
+		free(filename);
+		cmd->in_fd = open("/dev/null", O_RDONLY);
+		*tokens = (*tokens)->next->next;
+		return (1);
+	}
+	free(filename);
+	cmd->in_fd = fd;
+	*tokens = (*tokens)->next->next;
+	return (1);
 }
 
 static int	handle_redir_out(t_cmd_node *cmd, t_token **tokens,

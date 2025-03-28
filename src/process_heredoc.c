@@ -6,41 +6,37 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:50:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/26 19:32:09 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 13:53:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int process_heredoc(t_heredoc *heredoc_data, t_shell *shell)
+int	process_heredoc(t_heredoc *heredoc_data, t_shell *shell)
 {
-    char    *temp_file = NULL;
-    char    *content = NULL;
-    int     fd;
+	char	*temp_file;
+	char	*content;
+	int		fd;
 
-    temp_file = create_temp_file();
-    if (!temp_file)
-        return (perror("create_temp_file"), -1);
-    content = process_input_heredoc(heredoc_data, shell);
-    if (!content)
-        return (perror("process_input_heredoc"), free(temp_file), -1);
-    fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (fd == -1) {
-        perror("open");
-        free(content);
-        free(temp_file);
-        return -1;
-    }
-    write_content_to_temp_file(fd, content);
-    free(content);
-    close(fd);
-    fd = open_temp_file_for_reading(temp_file);
-    if (fd == -1) 
-        return (perror("open_temp_file_for_reading"), free(temp_file), -1);
-    free(temp_file);
-    return (fd);
+	temp_file = NULL;
+	content = NULL;
+	temp_file = create_temp_file();
+	if (!temp_file)
+		return (perror("create_temp_file"), -1);
+	content = process_input_heredoc(heredoc_data, shell);
+	if (!content)
+		return (perror("process_input_heredoc"), free(temp_file), -1);
+	fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+		return (perror("open"), free(content), free(temp_file), -1);
+	write_content_to_temp_file(fd, content);
+	free(content);
+	close(fd);
+	fd = open_temp_file_for_reading(temp_file);
+	if (fd == -1)
+		return (perror("open_temp_file_for_reading"), free(temp_file), -1);
+	return (fd);
 }
-
 
 char	*create_temp_file(void)
 {
