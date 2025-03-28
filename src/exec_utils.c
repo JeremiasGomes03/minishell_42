@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:33 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 17:09:08 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:06:12 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
 {
 	int		i;
 	char	*expanded_arg;
-	char	*temp;
 	int		quotes;
 
 	i = 0;
@@ -30,8 +29,10 @@ void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
 		{
 			expanded_arg = expand_variables(cmd->args[i], shell);
 			if (!expanded_arg)
-				return (printf("Erro ao expandir variáveis no argumento: %s\n",
-						cmd->args[i]));
+			{
+				printf("Err expandir variáveis: %s\n", cmd->args[i]);
+				return ;
+			}
 			cmd->args[i] = expanded_arg;
 		}
 		if (!cmd->args[i])
@@ -66,22 +67,17 @@ void	execute_child(t_cmd_node *cmd)
 	exit(EXIT_FAILURE);
 }
 
-void	execute_command(t_cmd_node *cmd, t_shell *shell)
+static void	execute_external_command(t_cmd_node *cmd, t_shell *shell)
 {
 	pid_t	pid;
 	int		status;
 
-	if (!cmd || !cmd->args || !cmd->args[0])
-		return (fprintf(stderr, "minishell: command not found\n"),
-			shell->exit_status = 127);
-	if (is_builtin(cmd))
-		return (execute_builtin(cmd, shell));
-	if (cmd->in_fd == -1)
-		return (fprintf(stderr, "minishell: No such file or directory\n"),
-			shell->exit_status = 1);
 	pid = fork();
 	if (pid == -1)
-		return (perror("fork"));
+	{
+		perror("fork");
+		return ;
+	}
 	if (pid == 0)
 	{
 		setup_child_signals();
@@ -89,4 +85,26 @@ void	execute_command(t_cmd_node *cmd, t_shell *shell)
 	}
 	waitpid(pid, &status, 0);
 	shell->exit_status = WEXITSTATUS(status);
+}
+
+void	execute_command(t_cmd_node *cmd, t_shell *shell)
+{
+	if (!cmd || !cmd->args || !cmd->args[0])
+	{
+		fprintf(stderr, "minishell: command not found\n");
+		shell->exit_status = 127;
+		return ;
+	}
+	if (is_builtin(cmd))
+	{
+		execute_builtin(cmd, shell);
+		return ;
+	}
+	if (cmd->in_fd == -1)
+	{
+		fprintf(stderr, "minishell: No such file or directory\n");
+		shell->exit_status = 1;
+		return ;
+	}
+	execute_external_command(cmd, shell);
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 17:28:55 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:26:00 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,30 +73,39 @@ static int	fork_and_execute(t_cmd_node *cmd, int prev_pipe_in, int pipefd[2])
 	return (pid);
 }
 
-static void	wait_for_children(int i, pid_t *pids, t_shell *shell)
+static int	process_pipeline_loop(t_cmd_node *cmd, pid_t *pids,
+	int *prev_pipe_in)
 {
-	int	j;
-	int	status;
+	int	i;
+	int	pipefd[2];
 
-	j = 0;
-	while (j < i)
+	i = 0;
+	while (cmd)
 	{
-		waitpid(pids[j], &status, 0);
-		if (j == i - 1)
+		if (cmd->args && cmd->args[0])
 		{
-			if (WIFEXITED(status))
-				shell->exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				shell->exit_status = 128 + WTERMSIG(status);
+			if (cmd->next && pipe(pipefd) == -1)
+				return (perror("pipe"), -1);
+			pids[i] = fork_and_execute(cmd, *prev_pipe_in, pipefd);
+			if (pids[i] == -1)
+				return (-1);
+			i++;
+			if (cmd->next)
+			{
+				close(pipefd[1]);
+				*prev_pipe_in = pipefd[0];
+			}
+			else
+				*prev_pipe_in = -1;
 		}
-		j++;
+		cmd = cmd->next;
 	}
+	return (i);
 }
 
 void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 {
 	pid_t		*pids;
-	int			pipefd[2];
 	int			prev_pipe_in;
 	int			i;
 	t_cmd_node	*cmd;
@@ -106,19 +115,11 @@ void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 	cmd = cmd_list->head;
 	if (!cmd || !create_pids_array(&pids, cmd_list->size))
 		return ;
-	while (cmd)
+	i = process_pipeline_loop(cmd, pids, &prev_pipe_in);
+	if (i == -1)
 	{
-		if (cmd->args && cmd->args[0])
-		{
-			if (cmd->next && pipe(pipefd) == -1)
-				return (perror("pipe"), free(pids));
-			pids[i] = fork_and_execute(cmd, prev_pipe_in, pipefd);
-			if (pids[i++] == -1)
-				return (free(pids));
-			if (cmd->next)
-				prev_pipe_in = pipefd[0];
-		}
-		cmd = cmd->next;
+		free(pids);
+		return ;
 	}
 	wait_for_children(i, pids, shell);
 	free(pids);

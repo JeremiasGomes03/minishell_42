@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/28 17:11:34 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:25:40 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,10 +168,11 @@ int			ft_findchr(char *str, char c);
 void        exit_with_error(char *msg);
 void        free_cmd_list(t_cmd_list *cmd_list);
 t_cmd_node  *create_cmd_node(void);
-int	validate_syntax(t_token *tokens);
+int			validate_syntax(t_token *tokens);
 char 		**ft_arrdup(char **arr);
 void 		ft_free_array(char **arr);
 int 		ft_isspace(int c);
 void		expand_command_args(t_cmd_node *cmd, t_shell *shell);
-void free_cmd_node(t_cmd_node *cmd);
+void		free_cmd_node(t_cmd_node *cmd);
+void		wait_for_children(int i, pid_t *pids, t_shell *shell);
 #endif

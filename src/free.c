@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:38:21 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 14:42:53 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:26:08 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,25 @@ void	free_cmd_node(t_cmd_node *cmd)
 		if (cmd->out_fd != STDOUT_FILENO && cmd->out_fd != -1)
 			close(cmd->out_fd);
 		free(cmd);
+	}
+}
+
+void	wait_for_children(int i, pid_t *pids, t_shell *shell)
+{
+	int	j;
+	int	status;
+
+	j = 0;
+	while (j < i)
+	{
+		waitpid(pids[j], &status, 0);
+		if (j == i - 1)
+		{
+			if (WIFEXITED(status))
+				shell->exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				shell->exit_status = 128 + WTERMSIG(status);
+		}
+		j++;
 	}
 }
