@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/28 17:38:43 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:07:18 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,29 +87,43 @@ static int	validate_input(char *input)
 	return (1);
 }
 
-static void	process_command(char *input, t_shell *shell)
+static void process_command(char *input, t_shell *shell)
 {
-	t_token	*tokens;
+    t_token *tokens;
 
-	tokens = tokenize_input(input);
-	if (!validate_syntax(tokens))
-	{
-		free_tokens(tokens);
-		free(input);
-		return ;
-	}
-	expander(&tokens, shell);
-	shell->cmd_list = parse_tokens(tokens, shell);
-	if (!shell->cmd_list)
-	{
-		free(input);
-		return ;
-	}
-	check_and_execute_exit(shell->cmd_list);
-	execute_pipeline(shell->cmd_list, shell);
-	free_cmd_list(shell->cmd_list);
-	shell->cmd_list = NULL;
-	free(input);
+    tokens = tokenize_input(input);
+    if (!validate_syntax(tokens))
+    {
+        free_tokens(tokens);
+        free(input);
+        return;
+    }
+
+    expander(&tokens, shell);
+    shell->cmd_list = parse_tokens(tokens, shell);
+    if (!shell->cmd_list)
+    {
+        free(input);
+        return;
+    }
+
+    // Acessa o primeiro nó da lista de comandos
+    t_cmd_node *cmd_node = shell->cmd_list->head;
+
+    // Verifica se o comando é uma built-in
+    if (is_builtin(cmd_node))  // Passando o nó correto
+    {
+        execute_builtin(cmd_node, shell);  // Executa a built-in com o nó correto
+    }
+    else
+    {
+        check_and_execute_exit(shell->cmd_list);  // Verifica e executa o exit se necessário
+        execute_pipeline(shell->cmd_list, shell); // Executa os comandos no pipeline
+    }
+
+    free_cmd_list(shell->cmd_list);
+    shell->cmd_list = NULL;
+    free(input);
 }
 
 int	main(int argc, char **argv, char **envp)

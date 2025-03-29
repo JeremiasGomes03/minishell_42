@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:33 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 19:06:12 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:22:01 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,44 +67,44 @@ void	execute_child(t_cmd_node *cmd)
 	exit(EXIT_FAILURE);
 }
 
-static void	execute_external_command(t_cmd_node *cmd, t_shell *shell)
-{
-	pid_t	pid;
-	int		status;
+// static void	execute_external_command(t_cmd_node *cmd, t_shell *shell)
+// {
+// 	pid_t	pid;
+// 	int		status;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return ;
-	}
-	if (pid == 0)
-	{
-		setup_child_signals();
-		execute_child(cmd);
-	}
-	waitpid(pid, &status, 0);
-	shell->exit_status = WEXITSTATUS(status);
-}
+// 	pid = fork();
+// 	if (pid == -1)
+// 	{
+// 		perror("fork");
+// 		return ;
+// 	}
+// 	if (pid == 0)
+// 	{
+// 		setup_child_signals();
+// 		execute_child(cmd);
+// 	}
+// 	waitpid(pid, &status, 0);
+// 	shell->exit_status = WEXITSTATUS(status);
+// }
 
-void	execute_command(t_cmd_node *cmd, t_shell *shell)
-{
-	if (!cmd || !cmd->args || !cmd->args[0])
-	{
-		fprintf(stderr, "minishell: command not found\n");
-		shell->exit_status = 127;
-		return ;
-	}
-	if (is_builtin(cmd))
-	{
-		execute_builtin(cmd, shell);
-		return ;
-	}
-	if (cmd->in_fd == -1)
-	{
-		fprintf(stderr, "minishell: No such file or directory\n");
-		shell->exit_status = 1;
-		return ;
-	}
-	execute_external_command(cmd, shell);
-}
+// void	execute_command(t_cmd_node *cmd, t_shell *shell)
+// {
+// 	if (!cmd || !cmd->args || !cmd->args[0])
+// 	{
+// 		fprintf(stderr, "minishell: command not found\n");
+// 		shell->exit_status = 127;
+// 		return ;
+// 	}
+// 	if (is_builtin(cmd))
+// 	{
+// 		execute_builtin(cmd, shell);
+// 		return ;
+// 	}
+// 	if (cmd->in_fd == -1)
+// 	{
+// 		fprintf(stderr, "minishell: No such file or directory\n");
+// 		shell->exit_status = 1;
+// 		return ;
+// 	}
+// 	execute_external_command(cmd, shell);
+// }

@@ -24,7 +24,7 @@ SRCS = src/main.c \
 		src/process_heredoc.c \
 		src/utils_builtins.c \
 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(SRCS:src/%.c=obj/%.o)
 
 CC = cc
 CFLAGS = -g3 -Wall -Wextra -Werror
@@ -40,11 +40,12 @@ $(LIBFT):
 $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft -lreadline
 
-%.o: %.c
+obj/%.o: src/%.c
+	@mkdir -p obj
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(OBJS)
+	@rm -rf $(OBJS) obj
 	@$(MAKE) clean -C $(LIBFT_DIR)
 
 fclean: clean
