@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 21:39:49 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 14:39:22 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:27:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,31 @@ int	ft_isnumeric(char *str)
 		str++;
 	}
 	return (1);
+}
+
+int	process_heredoc_input(int fd, char *delimiter, char *tmpname)
+{
+	char	*line;
+	int		len;
+	int		ret;
+
+	ret = 1;
+	len = ft_strlen(delimiter);
+	while (1)
+	{
+		line = readline("heredoc> ");
+		if (!line || (!ft_strncmp(line, delimiter, len + 1)))
+		{
+			ret = 1;
+			break ;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	free(line);
+	close(fd);
+	fd = open(tmpname, O_RDONLY);
+	unlink(tmpname);
+	return (fd != -1 && ret);
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:45:47 by lamachad          #+#    #+#             */
-/*   Updated: 2025/03/28 13:49:01 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 21:25:27 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,8 @@ int	is_builtin(t_cmd_node *cmd)
 		|| !ft_strcmp(cmd->args[0], "exit"));
 }
 
-static void	handle_fork_error(t_shell *shell)
-{
-	perror("minishell: fork");
-	shell->exit_status = 1;
-}
-
 void	execute_builtin(t_cmd_node *cmd, t_shell *shell)
 {
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == -1)
-		return (handle_fork_error(shell));
 	if (ft_strcmp(cmd->args[0], "echo") == 0)
 		builtin_echo(cmd);
 	else if (ft_strcmp(cmd->args[0], "cd") == 0)

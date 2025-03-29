@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/28 14:42:15 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:38:56 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ int	validate_syntax(t_token *tokens)
 	t_token	*current;
 
 	current = tokens;
-	if (!tokens)
-		return (printf("Erro: Token é nulo\n"), 0);
 	while (current)
 	{
 		if (current->type == TOKEN_PIPE)

@@ -1,49 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   envp.c                                             :+:      :+:    :+:   */
+/*   exec_utiils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 19:59:29 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/29 01:35:21 by jeremias         ###   ########.fr       */
+/*   Created: 2025/03/29 01:49:08 by jeremias          #+#    #+#             */
+/*   Updated: 2025/03/29 01:50:23 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	**dup_envp(char **envp)
+int	create_pids_array(pid_t **pids, int size)
 {
-	int		i;
-	char	**new_envp;
-
-	i = 0;
-	while (envp[i])
-		i++;
-	new_envp = malloc(sizeof(char *) * (i + 1));
-	if (!new_envp)
-		return (NULL);
-	i = 0;
-	while (envp[i])
+	*pids = malloc(sizeof(pid_t) * size);
+	if (!*pids)
 	{
-		new_envp[i] = strdup(envp[i]);
-		i++;
+		perror("minishell");
+		return (0);
 	}
-	new_envp[i] = NULL;
-	return (new_envp);
+	return (1);
 }
 
-void	free_envp(char **envp)
+void	close_previous_pipe(int *pipe_fd)
 {
-	int	i;
-
-	if (!envp)
-		return ;
-	i = 0;
-	while (envp[i])
+	if (*pipe_fd != -1)
 	{
-		free(envp[i]);
-		i++;
+		close(*pipe_fd);
+		*pipe_fd = -1;
 	}
-	free(envp);
+}
+
+void	close_pipes(int prev_pipe, int current_pipe[2])
+{
+	close_previous_pipe(&prev_pipe);
+	if (current_pipe[0] != -1)
+		close(current_pipe[0]);
+	if (current_pipe[1] != -1)
+		close(current_pipe[1]);
 }

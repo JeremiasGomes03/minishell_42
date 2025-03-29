@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/28 17:38:43 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:42:05 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,44 +23,14 @@ static void	check_and_execute_exit(t_cmd_list *cmd_list)
 		builtin_exit(cmd_list->head);
 }
 
-char *trim_whitespace(char *str)
-{
-    char *end;
-
-    if (str == NULL || *str == '\0')
-        return str;
-    while (ft_isspace((unsigned char)*str))
-        str++;
-    if (*str == '\0')
-        return str;
-    end = str + ft_strlen(str) - 1;
-    while (end > str && ft_isspace((unsigned char)*end))
-        end--;
-    *(end + 1) = '\0';
-    return str;
-}
-
-int ends_with_pipe(const char *input)
-{
-    int len;
-
-    if (!input)
-        return 0;
-    len = ft_strlen(input);
-    while (len > 0 && ft_isspace((unsigned char)input[len - 1]))
-        len--;
-    return (len > 0 && input[len - 1] == '|');
-}
-
-static int	check_syntax_errors(char *input)
+static int	check_syntax_errors(char *input, t_shell *shell)
 {
 	char	*trimmed;
-	t_shell	shell;
 
 	trimmed = trim_whitespace(input);
 	if (ft_strcmp(trimmed, "$PATH") == 0)
 	{
-		printf("%s\n", get_envp(&shell, "PATH"));
+		printf("%s\n", get_envp(shell, "PATH"));
 		free(input);
 		return (1);
 	}
@@ -73,21 +43,7 @@ static int	check_syntax_errors(char *input)
 	return (0);
 }
 
-static int	validate_input(char *input)
-{
-	if (ft_strnstr(input, "&&", ft_strlen(input))
-		|| ft_strnstr(input, "||", ft_strlen(input))
-		|| ft_strnstr(input, "\\", ft_strlen(input)))
-	{
-		write(2,
-			"minishell: unexpected token `&&' or `||' or `\\'\n", 49);
-		free(input);
-		return (0);
-	}
-	return (1);
-}
-
-static void	process_command(char *input, t_shell *shell)
+static void	process_tokens_and_execute(char *input, t_shell *shell)
 {
 	t_token	*tokens;
 
@@ -112,6 +68,13 @@ static void	process_command(char *input, t_shell *shell)
 	free(input);
 }
 
+static void	process_command(char *input, t_shell *shell)
+{
+	if (handle_variable_expansion(input, shell))
+		return ;
+	process_tokens_and_execute(input, shell);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -131,7 +94,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
-		if (check_syntax_errors(input) || !validate_input(input))
+		if (check_syntax_errors(input, &shell) || !validate_input(input))
 			continue ;
 		process_command(input, &shell);
 	}

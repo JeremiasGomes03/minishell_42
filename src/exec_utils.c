@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:33 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 19:06:12 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 01:41:48 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,44 +67,44 @@ void	execute_child(t_cmd_node *cmd)
 	exit(EXIT_FAILURE);
 }
 
-static void	execute_external_command(t_cmd_node *cmd, t_shell *shell)
+static char	*join_path(const char *dir, const char *cmd)
 {
-	pid_t	pid;
-	int		status;
+	char	*path;
+	char	*full_path;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return ;
-	}
-	if (pid == 0)
-	{
-		setup_child_signals();
-		execute_child(cmd);
-	}
-	waitpid(pid, &status, 0);
-	shell->exit_status = WEXITSTATUS(status);
+	path = ft_strjoin(dir, "/");
+	if (!path)
+		return (NULL);
+	full_path = ft_strjoin(path, cmd);
+	free(path);
+	return (full_path);
 }
 
-void	execute_command(t_cmd_node *cmd, t_shell *shell)
+char	*get_absolute_path(const char *cmd, t_shell *shell)
 {
-	if (!cmd || !cmd->args || !cmd->args[0])
+	int			i;
+	char		*path;
+	char		**paths;
+
+	(void)shell;
+	if (!cmd || !*cmd)
+		return (NULL);
+	if (access(cmd, X_OK) == 0)
+		return (ft_strdup(cmd));
+	path = getenv("PATH");
+	if (!path)
+		return (NULL);
+	paths = ft_split(path, ':');
+	if (!paths)
+		return (NULL);
+	i = -1;
+	while (paths[++i])
 	{
-		fprintf(stderr, "minishell: command not found\n");
-		shell->exit_status = 127;
-		return ;
+		path = join_path(paths[i], cmd);
+		if (path && access(path, X_OK) == 0)
+			return (free_split(paths), path);
+		free(path);
 	}
-	if (is_builtin(cmd))
-	{
-		execute_builtin(cmd, shell);
-		return ;
-	}
-	if (cmd->in_fd == -1)
-	{
-		fprintf(stderr, "minishell: No such file or directory\n");
-		shell->exit_status = 1;
-		return ;
-	}
-	execute_external_command(cmd, shell);
+	free_split(paths);
+	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 16:19:13 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:12:46 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,11 @@ char	*expand_variables(char *cmd, t_shell *shell)
 			if (handle_expansion(cmd, &i, &result, shell))
 				return (NULL);
 		}
-		if (handle_normal_char(cmd, i, &result))
-			return (NULL);
-		i++;
+		else
+		{
+			if (handle_normal_char(cmd, i++, &result))
+				return (NULL);
+		}
 	}
 	return (result);
 }

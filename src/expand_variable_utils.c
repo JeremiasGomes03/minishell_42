@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:03:08 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 16:05:44 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:23:26 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,14 @@ static char	*get_envp_value(t_shell *shell, char *var_name)
 static char	*extract_var_name_and_value(t_shell *shell, char *cmd, int *i)
 {
 	int		start;
-	int		len;
 	char	*var_name;
 	char	*var_value;
 
 	start = *i;
 	if (cmd[*i] == '{')
 		(*i)++;
-	len = 0;
-	while (cmd[*i + len] && (ft_isalnum(cmd[*i + len]) || cmd[*i + len] == '_'))
-		len++;
-	*i += len;
+	while (cmd[*i] && (ft_isalnum(cmd[*i]) || cmd[*i] == '_'))
+		(*i)++;
 	if (cmd[*i] == '}')
 		(*i)++;
 	var_name = ft_substr(cmd, start, *i - start);
@@ -70,4 +67,19 @@ char	*get_envp(t_shell *shell, char *cmd)
 		return (var_value);
 	}
 	return (ft_strdup(""));
+}
+
+void	free_split(char **split)
+{
+	int	i;
+
+	if (!split)
+		return ;
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 }

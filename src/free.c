@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:38:21 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 19:26:08 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 02:14:31 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,33 @@ void	free_cmd_node(t_cmd_node *cmd)
 	}
 }
 
-void	wait_for_children(int i, pid_t *pids, t_shell *shell)
+void	wait_for_children(pid_t *pids, int count, t_shell *shell)
 {
-	int	j;
 	int	status;
+	int	i;
 
-	j = 0;
-	while (j < i)
+	i = 0;
+	while (i < count)
 	{
-		waitpid(pids[j], &status, 0);
-		if (j == i - 1)
-		{
-			if (WIFEXITED(status))
-				shell->exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				shell->exit_status = 128 + WTERMSIG(status);
-		}
-		j++;
+		waitpid(pids[i], &status, 0);
+		if (WIFEXITED(status))
+			shell->exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			shell->exit_status = 128 + WTERMSIG(status);
+		i++;
 	}
+}
+
+int	print_error(char *cmd, char *msg, int code)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	if (cmd)
+		ft_putstr_fd(cmd, STDERR_FILENO);
+	if (msg)
+	{
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putstr_fd(msg, STDERR_FILENO);
+	}
+	ft_putchar_fd('\n', STDERR_FILENO);
+	return (code);
 }
