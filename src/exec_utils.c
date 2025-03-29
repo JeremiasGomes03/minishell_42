@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:33 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 01:41:48 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 14:28:50 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,18 +80,35 @@ static char	*join_path(const char *dir, const char *cmd)
 	return (full_path);
 }
 
+char	*get_env_value(char **envp, const char *var)
+{
+	int		i;
+	int		var_len;
+
+	if (!envp || !var)
+		return (NULL);
+	var_len = ft_strlen(var);
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], var, var_len) == 0 && envp[i][var_len] == '=')
+			return (envp[i] + var_len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
 char	*get_absolute_path(const char *cmd, t_shell *shell)
 {
-	int			i;
-	char		*path;
-	char		**paths;
+	int		i;
+	char	*path;
+	char	**paths;
 
-	(void)shell;
 	if (!cmd || !*cmd)
 		return (NULL);
 	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-	path = getenv("PATH");
+	path = get_env_value(shell->envp, "PATH");
 	if (!path)
 		return (NULL);
 	paths = ft_split(path, ':');

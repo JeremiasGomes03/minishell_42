@@ -19,3 +19,33 @@ Observações:
 2- Comportamento estranho na hora de imprimir o minishell> na tela
 3- Tratar && e ||
 4- Tratar / \
+
+
+minishell> << eof
+heredoc> ola
+heredoc> eof
+minishell: invalid command
+minishell> 
+
+///////
+
+
+
+minishell> cat << eof
+heredoc> $PATH
+heredoc> eof
+$PATH
+minishell>
+
+//////////
+
+minishell> echo start | cat |echo start | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc
+malloc(): corrupted top size
+malloc(): corrupted top size
+malloc(): corrupted top size
+malloc(): corrupted top size
+malloc(): corrupted top size
+malloc(): corrupted top size
+malloc(): corrupted top size
+minishell> echo start | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat |malloc(): corrupted top size
+Abortado (imagem do núcleo gravada)

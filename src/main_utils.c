@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 02:32:18 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 02:40:41 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 14:31:40 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,27 @@ int	handle_variable_expansion(char *input, t_shell *shell)
 	free(expanded);
 	free(input);
 	return (1);
+}
+
+t_heredoc	*init_heredoc_data(t_token *token)
+{
+	t_heredoc	*heredoc_data;
+
+	heredoc_data = malloc(sizeof(t_heredoc));
+	if (!heredoc_data)
+		exit_with_error("malloc");
+	if ((token->quote_type == SINGLE_QUOTES || token->quote_type
+			== DOUBLE_QUOTES)
+		&& ft_strlen(token->value) >= 2)
+	{
+		heredoc_data->quote_type = token->quote_type;
+		heredoc_data->delimiter = ft_substr(token->value, 1,
+				ft_strlen(token->value) - 2);
+	}
+	else
+	{
+		heredoc_data->quote_type = NO_QUOTES;
+		heredoc_data->delimiter = ft_strdup(token->value);
+	}
+	return (heredoc_data);
 }

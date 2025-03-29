@@ -1,6 +1,7 @@
 NAME = minishell
 
 SRCS = src/main.c \
+		src/main_utils.c \
 		src/parse_tokens.c \
 		src/parse_command.c \
 		src/parse_handlers.c \
@@ -12,6 +13,7 @@ SRCS = src/main.c \
 		src/builtins.c \
 		src/exec.c \
 		src/exec_utils.c \
+		src/exec_utils2.c \
 		src/utils.c \
 		src/signal.c \
 		src/expand_utils.c \

@@ -85,3 +85,8 @@ cat << eof CTRL + D
 cat << eof CTRL + C
 cat CTRL + D
 cat CTRL + C
+
+
+
+
+echo start | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc

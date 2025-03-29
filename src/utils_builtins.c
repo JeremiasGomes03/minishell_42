@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 17:30:03 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/28 14:32:54 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 14:32:12 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,18 +93,18 @@ void export_add_or_replace(t_shell *shell, char *var)
 
 char *sanitize_export_arg(char *arg)
 {
-    int len;
+	int len;
 
-    if (!arg)
-        return NULL;
-    len = ft_strlen(arg);
-    if (arg[0] == '"' && arg[len - 1] == '"')
-    {
-        return ft_substr(arg, 1, len - 2);
-    }
-    if (arg[0] == '\'' && arg[len - 1] == '\'')
-    {
-        return ft_substr(arg, 1, len - 2);
-    }
-    return ft_strdup(arg);
+	if (!arg)
+		return NULL;
+	len = ft_strlen(arg);
+	if (arg[0] == '"' && arg[len - 1] == '"')
+	{
+		return ft_substr(arg, 1, len - 2);
+	}
+	if (arg[0] == '\'' && arg[len - 1] == '\'')
+	{
+		return ft_substr(arg, 1, len - 2);
+	}
+	return ft_strdup(arg);
 }

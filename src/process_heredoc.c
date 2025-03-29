@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:50:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 03:03:14 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 13:23:37 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,9 @@ char	*process_input_heredoc(t_heredoc *heredoc_data, t_shell *shell)
 			free(line);
 			break ;
 		}
-		if (heredoc_data->quote_type != SINGLE_QUOTES)
+		if (heredoc_data->quote_type == NO_QUOTES)
 		{
 			expanded_line = expand_variables(line, shell);
-			printf("DEBUG: expanded_line = %s\n", expanded_line);
 			if (!expanded_line)
 				return (ft_strdup(""));
 			free(line);

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:08:12 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 01:34:35 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 14:30:44 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,26 +57,19 @@ static int	expand_redirectio_fname(char **filename, int quote_type,
 
 static int	handle_heredoc(t_cmd_node *cmd, t_token **token, t_shell *shell)
 {
-	char	tmpname[35];
-	char	*delimiter;
-	int		fd;
+	t_heredoc	*heredoc_data;
+	int			fd;
 
-	ft_strlcpy(tmpname, "/tmp/minishell_heredoc_XXXXXX", 35);
 	if (!(*token)->next || (*token)->next->type != TOKEN_WORD)
-	{
-		ft_putstr_fd("minishell: heredoc sem delimitador\n", STDERR_FILENO);
-		return (0);
-	}
-	delimiter = ft_strdup((*token)->next->value);
-	if (!expand_redirectio_fname(&delimiter, (*token)->next->quote_type, shell))
-		return (free(delimiter), 0);
-	fd = my_mkstemp(tmpname);
+		return (ft_putstr_fd("minishell: heredoc sem delimitador\n",
+				STDERR_FILENO), 0);
+	heredoc_data = init_heredoc_data((*token)->next);
+	fd = process_heredoc(heredoc_data, shell);
+	free(heredoc_data->delimiter);
+	free(heredoc_data);
 	if (fd == -1)
-		return (free(delimiter), perror("minishell: heredoc"), 0);
-	if (!process_heredoc_input(fd, delimiter, tmpname))
-		return (free(delimiter), close(fd), 0);
+		return (0);
 	cmd->in_fd = fd;
-	free(delimiter);
 	*token = (*token)->next->next;
 	return (1);
 }
