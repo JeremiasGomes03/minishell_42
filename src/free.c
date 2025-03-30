@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:38:21 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 02:14:31 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 19:45:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,35 +48,39 @@ void	free_cmd_list(t_cmd_list *cmd_list)
 	free(cmd_list);
 }
 
-void	free_cmd_node(t_cmd_node *cmd)
+void	free_redirections(t_redir *redir)
 {
-	if (cmd)
+	t_redir	*tmp;
+
+	while (redir)
 	{
-		if (cmd->args)
-			ft_free_array(cmd->args);
-		if (cmd->in_fd != STDIN_FILENO && cmd->in_fd != -1)
-			close(cmd->in_fd);
-		if (cmd->out_fd != STDOUT_FILENO && cmd->out_fd != -1)
-			close(cmd->out_fd);
-		free(cmd);
+		tmp = redir->next;
+		if (redir->heredoc_data)
+		{
+			free(redir->heredoc_data->delimiter);
+			free(redir->heredoc_data);
+		}
+		free(redir);
+		redir = tmp;
 	}
 }
 
-void	wait_for_children(pid_t *pids, int count, t_shell *shell)
+void	free_cmd_node(t_cmd_node *node)
 {
-	int	status;
 	int	i;
 
-	i = 0;
-	while (i < count)
+	if (!node)
+		return ;
+	if (node->args)
 	{
-		waitpid(pids[i], &status, 0);
-		if (WIFEXITED(status))
-			shell->exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			shell->exit_status = 128 + WTERMSIG(status);
-		i++;
+		i = 0;
+		while (node->args[i])
+			free(node->args[i++]);
+		free(node->args);
 	}
+	if (node->redirections)
+		free_redirections(node->redirections);
+	free(node);
 }
 
 int	print_error(char *cmd, char *msg, int code)

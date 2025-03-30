@@ -14,6 +14,7 @@ SRCS = src/main.c \
 		src/exec.c \
 		src/exec_utils.c \
 		src/exec_utils2.c \
+		src/exec_utils3.c \
 		src/utils.c \
 		src/signal.c \
 		src/expand_utils.c \

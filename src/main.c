@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 15:16:29 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/29 02:42:05 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 18:59:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	process_tokens_and_execute(char *input, t_shell *shell)
 	tokens = tokenize_input(input);
 	if (!validate_syntax(tokens))
 	{
-		free_tokens(tokens);
+		free_tokens(&tokens);
 		free(input);
 		return ;
 	}
@@ -63,6 +63,7 @@ static void	process_tokens_and_execute(char *input, t_shell *shell)
 	}
 	check_and_execute_exit(shell->cmd_list);
 	execute_pipeline(shell->cmd_list, shell);
+	free_tokens(&tokens);
 	free_cmd_list(shell->cmd_list);
 	shell->cmd_list = NULL;
 	free(input);

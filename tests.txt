@@ -90,3 +90,60 @@ cat CTRL + C
 
 
 echo start | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc
+
+
+
+
+→ Output "Hello".
+
+---
+
+## 4. **Pipes (`|`)**
+- [ ] Test 4.1: `ls | grep .c` → List files ending with `.c`.
+- [ ] Test 4.2: `echo "hello" | cat | wc -c` → Output `6`.
+
+---
+
+## 5. **Environment Variables**
+### 5.1 Expansion
+- [ ] Test 5.1.1: `echo $PATH` → Output PATH variable.
+- [ ] Test 5.1.2: `echo "$USER"` → Output current user (quotes preserve `$`).
+
+### 5.2 Exit Status (`$?`)
+- [ ] Test 5.2.1: `invalid_command` then `echo $?` → Output `127`.
+- [ ] Test 5.2.2: `ls` then `echo $?` → Output `0`.
+
+---
+
+## 6. **Signal Handling**
+### 6.1 Interactive Mode
+- [ ] Test 6.1.1: `Ctrl+C` → New prompt on new line.
+- [ ] Test 6.1.2: `Ctrl+D` → Exits shell.
+- [ ] Test 6.1.3: `Ctrl+\` → Does nothing (no crash).
+
+---
+
+## 7. **Error Handling**
+### 7.1 Syntax Errors
+- [ ] Test 7.1.1: `echo "unclosed_quote` → Error message.
+- [ ] Test 7.1.2: `ls |` → Error "syntax error near `|`".
+
+### 7.2 Invalid Commands
+- [ ] Test 7.2.1: `invalid_command` → "command not found".
+
+---
+
+## 8. **Memory Leaks**
+- [ ] Test 8.1: Run `valgrind --leak-check=full ./minishell` and execute all tests above → No leaks in **your code**.
+
+---
+
+## How to Use This File:
+1. Run tests in order.
+2. For heredoc tests, type input as shown.
+3. Use `valgrind` for memory checks (Section 8).
+4. Compare results to bash behavior.
+
+**Notes**:
+- For automated testing, create a script that feeds input to `minishell` (e.g., `echo "ls" | ./minishell`).
+- Test edge cases (e.g., `> file`, `>> file`, mixed pipes/redirections).

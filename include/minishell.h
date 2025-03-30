@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/29 14:13:15 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 19:48:01 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,28 @@ typedef enum e_quote_type
     DOUBLE_QUOTES
 } t_quote_type;
 
+typedef enum e_redir_type
+{
+    REDIR_IN,
+    REDIR_OUT,
+    REDIR_APPEND,
+    REDIR_HEREDOC
+} t_redir_type;
+
+typedef struct s_heredoc
+{
+    char    *delimiter;
+    int     quote_type;
+} t_heredoc;
+
+typedef struct s_redir
+{
+    t_redir_type  type;
+    t_heredoc     *heredoc_data;
+    struct s_redir *next;
+} t_redir;
+
+
 typedef struct s_token
 {
     char            *value;
@@ -50,21 +72,13 @@ typedef struct s_token
     struct s_token  *next;
 } t_token;
 
-typedef struct s_heredoc {
-    char    *delimiter;
-    int     quote_type;
-} t_heredoc;
-
-typedef struct s_redir {
-    int         type;
-    t_heredoc   *heredoc_data;
-} t_redir;
 
 typedef struct s_cmd_node
 {
 	char                **args;
 	int                 in_fd;
 	int                 out_fd;
+	t_redir         *redirections;
 	struct s_cmd_node   *next;
 } t_cmd_node;
 
@@ -103,7 +117,7 @@ void        handle_env_vars(char **input, t_token **tokens);
 int         is_space(char c);	
 int         is_operator(char c);
 int         is_quote(char c);
-void        free_tokens(t_token *tokens);
+void		free_tokens(t_token **tokens);
 char        *get_quoted_literal(char **input, char quote);
 
 // Parsing
@@ -136,7 +150,7 @@ int     	my_mkstemp(char *template);
 // Execução
 void		execute_command(t_cmd_node *cmd, t_shell *shell);
 void		execute_pipeline(t_cmd_list *cmd_list, t_shell *shell);
-int			create_pids_array(pid_t **pids, int size);
+pid_t	*create_pids_array(int size);
 void		close_previous_pipe(int *pipe_fd);
 void		close_pipes(int prev_pipe, int current_pipe[2]);
 
@@ -190,5 +204,8 @@ void		free_split(char **split);
 int			print_error(char *cmd, char *msg, int code);
 int			process_heredoc_input(int fd, char *delimiter, char *tmpname);
 t_heredoc	*init_heredoc_data(t_token *token);
+int			is_env_modifying_builtin(t_cmd_node *cmd);
+int			handle_parent_builtin(t_cmd_node *cmd, t_shell *shell);
+int			has_non_heredoc_redirs(t_cmd_node *cmd);
 
 #endif

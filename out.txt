@@ -1,0 +1,9 @@
+include
+lib
+Makefile
+minishell
+OFICIAL-TESTE.txt
+out.txt
+src
+teste.txt
+tests.txt

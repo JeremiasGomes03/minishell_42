@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 17:30:03 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/29 14:32:12 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 20:33:13 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,6 @@ void export_add_or_replace(t_shell *shell, char *var)
 	}
 	new_envp[j++] = ft_strdup(var);
 	new_envp[j] = NULL;
-	j = 0;
-	while (shell->envp[j])
-	{
-		free(shell->envp[j]);
-		j++;
-	}
 	free(shell->envp);
 	shell->envp = new_envp;
 }

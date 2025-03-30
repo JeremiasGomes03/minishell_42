@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:04:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 14:29:10 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 19:47:42 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	check_pipe_syntax(t_token *tokens, t_shell *shell,
 	if (tokens && tokens->type == TOKEN_PIPE)
 	{
 		fprintf(stderr, "minishell: syntax error near unexpected token `|'\n");
-		free_tokens(original_tokens);
+		free_tokens(&original_tokens);
 		shell->exit_status = 258;
 	}
 }
@@ -54,8 +54,15 @@ static void	process_tokens(t_token **tokens, t_cmd_list *cmd_list,
 		current = parse_command(tokens, shell);
 		if (current)
 		{
-			append_command(cmd_list, current);
-			(*valid_commands)++;
+			if ((current->args && current->args[0])
+				|| has_non_heredoc_redirs(current))
+			{
+				append_command(cmd_list, current);
+				(*valid_commands)++;
+				cmd_list->size = *valid_commands;
+			}
+			else
+				free_cmd_node(current);
 		}
 		if (handle_token_pipe(tokens))
 			continue ;

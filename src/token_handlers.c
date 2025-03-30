@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:01:42 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/24 13:29:49 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 20:04:21 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	handle_word(char **input, t_token **tokens)
 		&& !is_operator((*input)[i]) && !is_quote((*input)[i]))
 		i++;
 	value = ft_substr(*input, 0, i);
+	if (!value)
+		exit(EXIT_FAILURE);
 	add_token(tokens, value, TOKEN_WORD, NO_QUOTES);
 	*input += i;
 }

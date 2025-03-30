@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 14:34:22 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/29 20:47:48 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,30 +39,31 @@ static int	setup_child_process(t_cmd_node *cmd,
 }
 
 static int	fork_and_execute(t_cmd_node *cmd, int prev_pipe_in, \
-	int pipefd[2], t_shell *shell)
+int pipefd[2], t_shell *shell)
 {
 	pid_t	pid;
 	char	*path;
 
-	if (is_builtin(cmd))
-	{
-		execute_builtin(cmd, shell);
-		return (0);
-	}
+	if (is_env_modifying_builtin(cmd))
+		return (handle_parent_builtin(cmd, shell));
 	pid = fork();
 	if (pid == -1)
 		return (perror("minishell: fork"), -1);
 	if (pid == 0)
 	{
 		setup_child_process(cmd, prev_pipe_in, pipefd);
-		if (!cmd->args || !cmd->args[0])
-			exit(print_error("invalid command", NULL, 1));
+		if (is_builtin(cmd))
+		{
+			execute_builtin(cmd, shell);
+			exit(shell->exit_status);
+		}
 		path = get_absolute_path(cmd->args[0], shell);
 		if (!path)
 			exit(print_error(cmd->args[0], "command not found", 127));
-		execve(path, cmd->args, shell->envp);
+		if (execve(path, cmd->args, shell->envp) == -1)
+			exit(print_error(cmd->args[0], strerror(errno), 126));
 		free(path);
-		exit(print_error(cmd->args[0], strerror(errno), 126));
+		exit(shell->exit_status);
 	}
 	return (pid);
 }
@@ -76,7 +77,10 @@ static int	handle_command(t_cmd_node **cmd, pid_t *pid,
 	curr_pipe[1] = -1;
 	if ((*cmd)->next && pipe(curr_pipe) == -1)
 		return (close_pipes(*prev_pipe, curr_pipe), 0);
-	*pid = fork_and_execute(*cmd, *prev_pipe, curr_pipe, sh);
+	if (pid)
+		*pid = fork_and_execute(*cmd, *prev_pipe, curr_pipe, sh);
+	else
+		fork_and_execute(*cmd, *prev_pipe, curr_pipe, sh);
 	if (*pid == -1)
 		return (close_pipes(*prev_pipe, curr_pipe), 0);
 	close_previous_pipe(prev_pipe);
@@ -112,19 +116,25 @@ void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 	int		prev_pipe;
 	int		cmd_count;
 
+	pids = NULL;
 	prev_pipe = -1;
-	cmd_count = 0;
-	if (!cmd_list || !cmd_list->head
-		|| !create_pids_array(&pids, cmd_list->size))
+	if (!cmd_list || !cmd_list->head || cmd_list->size <= 0)
 		return ;
-	cmd_count = process_commands(cmd_list->head, pids, &prev_pipe, shell);
-	if (prev_pipe != -1)
-		close(prev_pipe);
-	if (cmd_count == -1)
+	cmd_count = cmd_list->size;
+	pids = create_pids_array(cmd_count);
+	if (!pids)
+	{
+		perror("minishell: malloc failed");
+		exit(EXIT_FAILURE);
+	}
+	ft_memset(pids, 0, sizeof(pid_t) * cmd_count);
+	if (process_commands(cmd_list->head, pids, &prev_pipe, shell) == -1)
 	{
 		free(pids);
 		return ;
 	}
+	if (prev_pipe != -1)
+		close(prev_pipe);
 	wait_for_children(pids, cmd_count, shell);
 	free(pids);
 }
