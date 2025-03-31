@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 21:39:49 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 02:27:04 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/30 20:38:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	add_arg_to_cmd(t_cmd_node *cmd, char *arg)
 	int		i;
 	char	**tmp;
 
-	if (!arg)
+	if (!cmd || !arg)
 		return ;
 	i = 0;
 	while (cmd->args && cmd->args[i])

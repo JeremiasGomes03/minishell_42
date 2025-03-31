@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:03:59 by jerda-si          #+#    #+#             */
-/*   Updated: 2024/10/29 20:53:58 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:27:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
-{	
+{
 	char	*substr;
 	size_t	s_len;
 

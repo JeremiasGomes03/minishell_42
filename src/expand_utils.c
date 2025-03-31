@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion_utils.c                                  :+:      :+:    :+:   */
+/*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 13:53:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/28 15:00:19 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:15:55 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,20 @@ int	check_quotes(char c, int quotes)
 	return (quotes);
 }
 
-void	expander(t_token **head, t_shell *shell)
+void	expander(t_token **tokens, t_shell *shell)
 {
 	t_token	*current;
-	char	*temp;
+	char	*expanded;
 
-	current = *head;
+	current = *tokens;
 	while (current)
 	{
-		if (current->quote_type != SINGLE_QUOTES
-			&& ft_strchr(current->value, '$'))
+		if (current->type == TOKEN_WORD)
 		{
-			temp = current->value;
-			current->value = expand_variables(current->value, shell);
-			if (!current->value)
-				current->value = temp;
-			else
-				free(temp);
+			expanded = expand_variables(current->value,
+					current->quote_type, shell);
+			free(current->value);
+			current->value = expanded;
 		}
 		current = current->next;
 	}

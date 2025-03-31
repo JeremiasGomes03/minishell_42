@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:04:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 19:47:42 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:00:39 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,7 @@ static void	process_tokens(t_token **tokens, t_cmd_list *cmd_list,
 		prev = *tokens;
 		current = parse_command(tokens, shell);
 		if (current)
-		{
-			if ((current->args && current->args[0])
-				|| has_non_heredoc_redirs(current))
-			{
-				append_command(cmd_list, current);
-				(*valid_commands)++;
-				cmd_list->size = *valid_commands;
-			}
-			else
-				free_cmd_node(current);
-		}
+			handle_parse_command(cmd_list, current, valid_commands);
 		if (handle_token_pipe(tokens))
 			continue ;
 		if (*tokens == prev)

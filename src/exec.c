@@ -6,15 +6,26 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 20:47:48 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 16:08:42 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	setup_child_process(t_cmd_node *cmd,
-	int prev_pipe_in, int pipefd[2])
+static int	setup_child_process(t_cmd_node *cmd, int prev_pipe_in,
+	int pipefd[2])
 {
+	if (prev_pipe_in != -1)
+	{
+		dup2(prev_pipe_in, STDIN_FILENO);
+		close(prev_pipe_in);
+	}
+	if (cmd->next)
+	{
+		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+	}
 	if (cmd->in_fd != STDIN_FILENO)
 	{
 		dup2(cmd->in_fd, STDIN_FILENO);
@@ -25,21 +36,11 @@ static int	setup_child_process(t_cmd_node *cmd,
 		dup2(cmd->out_fd, STDOUT_FILENO);
 		close(cmd->out_fd);
 	}
-	if (prev_pipe_in != -1)
-	{
-		dup2(prev_pipe_in, STDIN_FILENO);
-		close(prev_pipe_in);
-	}
-	if (cmd->next)
-	{
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[1]);
-	}
 	return (1);
 }
 
-static int	fork_and_execute(t_cmd_node *cmd, int prev_pipe_in, \
-int pipefd[2], t_shell *shell)
+static int	fork_and_execute(t_cmd_node *cmd, int prev_pipe_in,
+	int pipefd[2], t_shell *shell)
 {
 	pid_t	pid;
 	char	*path;
@@ -77,17 +78,13 @@ static int	handle_command(t_cmd_node **cmd, pid_t *pid,
 	curr_pipe[1] = -1;
 	if ((*cmd)->next && pipe(curr_pipe) == -1)
 		return (close_pipes(*prev_pipe, curr_pipe), 0);
-	if (pid)
-		*pid = fork_and_execute(*cmd, *prev_pipe, curr_pipe, sh);
-	else
-		fork_and_execute(*cmd, *prev_pipe, curr_pipe, sh);
-	if (*pid == -1)
-		return (close_pipes(*prev_pipe, curr_pipe), 0);
-	close_previous_pipe(prev_pipe);
+	*pid = fork_and_execute(*cmd, *prev_pipe, curr_pipe, sh);
+	if (*prev_pipe != -1)
+		close(*prev_pipe);
 	if ((*cmd)->next)
 	{
-		*prev_pipe = curr_pipe[0];
 		close(curr_pipe[1]);
+		*prev_pipe = curr_pipe[0];
 	}
 	else
 		close(curr_pipe[0]);
@@ -103,6 +100,12 @@ static int	process_commands(t_cmd_node *cmd, pid_t *pids,
 	i = 0;
 	while (cmd)
 	{
+		if (cmd->in_fd == -2 || cmd->out_fd == -2)
+		{
+			sh->exit_status = 130;
+			close_pipes(*prev_p, (int [2]){-1, -1});
+			return (0);
+		}
 		if (!handle_command(&cmd, &pids[i], prev_p, sh))
 			return (-1);
 		i++;
@@ -116,23 +119,12 @@ void	execute_pipeline(t_cmd_list *cmd_list, t_shell *shell)
 	int		prev_pipe;
 	int		cmd_count;
 
-	pids = NULL;
 	prev_pipe = -1;
-	if (!cmd_list || !cmd_list->head || cmd_list->size <= 0)
-		return ;
 	cmd_count = cmd_list->size;
 	pids = create_pids_array(cmd_count);
 	if (!pids)
-	{
-		perror("minishell: malloc failed");
-		exit(EXIT_FAILURE);
-	}
-	ft_memset(pids, 0, sizeof(pid_t) * cmd_count);
-	if (process_commands(cmd_list->head, pids, &prev_pipe, shell) == -1)
-	{
-		free(pids);
-		return ;
-	}
+		return (perror("minishell: malloc failed"), (void)0);
+	process_commands(cmd_list->head, pids, &prev_pipe, shell);
 	if (prev_pipe != -1)
 		close(prev_pipe);
 	wait_for_children(pids, cmd_count, shell);

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:27:11 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 02:12:46 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:15:20 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,39 +54,46 @@ static int	handle_expansion(char *cmd, int *i, char **result, t_shell *shell)
 	return (0);
 }
 
-static int	handle_normal_char(char *cmd, int i, char **result)
+char	*expand_variables_loop(char *cmd, t_quote_type quote_type,
+	t_shell *shell, char *result)
 {
-	*result = ft_strjoin_char(*result, cmd[i]);
-	if (!*result)
-		return (1);
-	return (0);
-}
-
-char	*expand_variables(char *cmd, t_shell *shell)
-{
-	char	*result;
-	int		i;
-	int		quotes;
+	int	i;
+	int	in_quotes;
 
 	i = 0;
-	quotes = 0;
-	result = ft_strdup("");
-	if (!result || !cmd)
-		return (NULL);
+	in_quotes = 0;
 	while (cmd[i])
 	{
-		quotes = check_quotes(cmd[i], quotes);
-		if (cmd[i] == '$' && quotes != 2)
+		if (quote_type == NO_QUOTES)
+			in_quotes = check_quotes(cmd[i], in_quotes);
+		if (cmd[i] == '$' && (quote_type == DOUBLE_QUOTES || !in_quotes))
 		{
-			i++;
-			if (handle_expansion(cmd, &i, &result, shell))
-				return (NULL);
+			if (cmd[i + 1] && (cmd[i + 1] == '?' || cmd[i + 1] == '{'
+					|| ft_isalnum(cmd[i + 1]) || cmd[i + 1] == '_'))
+			{
+				i++;
+				handle_expansion(cmd, &i, &result, shell);
+			}
+			else
+				result = ft_strjoin_char(result, '$');
 		}
 		else
-		{
-			if (handle_normal_char(cmd, i++, &result))
-				return (NULL);
-		}
+			result = ft_strjoin_char(result, cmd[i]);
+		i++;
 	}
 	return (result);
+}
+
+char	*expand_variables(char *cmd, t_quote_type quote_type, t_shell *shell)
+{
+	char	*result;
+
+	if (!cmd)
+		return (NULL);
+	result = ft_strdup("");
+	if (!result)
+		return (NULL);
+	if (quote_type == SINGLE_QUOTES)
+		return (free(result), ft_strdup(cmd));
+	return (expand_variables_loop(cmd, quote_type, shell, result));
 }

@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:33 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 14:28:50 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:22:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,14 @@
 
 void	expand_command_args(t_cmd_node *cmd, t_shell *shell)
 {
-	int		i;
-	char	*expanded_arg;
-	int		quotes;
+	int	i;
 
+	(void)shell;
 	i = 0;
-	quotes = 0;
 	while (cmd->args && cmd->args[i])
 	{
-		quotes = check_quotes(cmd->args[i][0], quotes);
 		if (cmd->args[i][0] == '\1')
 			cmd->args[i] = ft_strdup(cmd->args[i] + 1);
-		else if (ft_strchr(cmd->args[i], '$') && quotes != 2)
-		{
-			expanded_arg = expand_variables(cmd->args[i], shell);
-			if (!expanded_arg)
-			{
-				printf("Err expandir variáveis: %s\n", cmd->args[i]);
-				return ;
-			}
-			cmd->args[i] = expanded_arg;
-		}
-		if (!cmd->args[i])
-			return (perror("ft_strdup"), exit(EXIT_FAILURE));
 		i++;
 	}
 }

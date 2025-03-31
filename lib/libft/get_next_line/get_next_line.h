@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 19:36:04 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/07 17:47:25 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:38:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,6 @@
 char		*get_next_line(int fd);
 size_t		ft_strlen(const char *str);
 char		*ft_strchr(char *s, int c);
-char *ft_strjoin(const char *s1, const char *s2);
+char		*ft_strjoin(const char *s1, const char *s2);
 
 #endif

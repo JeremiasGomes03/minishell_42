@@ -1,149 +1,81 @@
-|
-<
->
-<< eof
-cat <<
-||||||
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-<>><<<<><>>><><><><>><><>
-><<>><<>><<><
-<><T<.h=hdf,>
-<|>
-|<>
-<>|
-/
-$
-$$$
-///////
+echo Hello World
+echo -n "No Newline"
 ls
-pwd
-echo 'oi'
-echo "oi"
-echo oi
 /bin/ls
-/bin/ls -l
-/bin/ls -l -a
-'/bin/ls' '-l' -a
-'/bin/ls' "-l" '-a'
-"/bin/ls" '-l' "-a'
-"/bin/ls" "-l" "-a"
-'/bin/ls' '-l' '-a'
-'/bin/cat' '-e' Makefile
-ls $PATH
-ls '$PATH'
-ls "$PATH"
-"$PATH" ls   (revisar)
-'$PATH' ls   (revisar)
-$PATH ls     (revisar)
-'ls -l'
-"ls -l'      (revisar)
-"ls $PATH"   (revisar)
-'ls $PATH'
-'$PATH ls'
-"$PATH ls"   (revisar)
-$PATH ls     (revisar)
-'$PAT ls'
-'ls $PAT'
+./non_existent_script
+cat < non_existent_file
+echo test > outfile; cat outfile; rm outfile
+echo append >> outfile; cat outfile; rm outfile
+cat << EOF
+heredoc> line1
+heredoc> line2
+heredoc> EOF
+ls | grep .c | wc -l
 echo $PATH
-echo '$PATH'
-echo "$HOME"
-export adriel="jeremias"  (revisar)
-echo $adriel
-unset adriel
-echo $adriel
-cd /
-cd ~
-cd /inexistente
-pwd
-ls | pwd
-ls | pwd | echo 'oi'
-ls | sort
-grep root /etc/passwd
-ls -la | grep ".c" | wc -l
-ls -la | grep ".c" > output.txt
-ls > redirect.txt
-ls | pwd | echo 'teste' > redirect_pipe.txt
-cat << eof > redirect_hrdc.txt
->a
-ls -la | grep ".c" >> tst.txt
-exit oskaokds
-Exit
-exit 0
-exit 1
-exit '0'
-exit '1'
+echo $?
+ls invalid_dir
+echo $?
+export TEST=value; echo $TEST
+unset TEST; echo $TEST
+cd non_existent_dir
+cd ..; pwd
+exit 42
+""
+''
+echo "Unclosed quote
+echo 'Unclosed single quote
+echo \$TEST
+echo "$TEST"
+echo "'$TEST'"
+echo '"$TEST"'
+echo "hello | world"
+echo hello;world
+echo hello\ world
+echo -e "escape"
+< input.txt
+> output.txt
+echo >>
+echo |
+| echo
 $?
-cat << eof | wc -l
-cat << eof | grep "linha"
-cat << "eof"
-cat << 'eof'
-cat << eof $PATH
-cat << eof '$PATH'
-cat << eof "$PATH"
-cat << eof CTRL + D
-cat << eof CTRL + C
-cat CTRL + D
-cat CTRL + C
+$INVALID_VAR
+export 1invalid=name
+unset
+env | grep PATH
+exit
+exit 256
+exit -1
+exit abc
+echo ~
+echo *
+echo ?
+echo ""
+echo '' 
+echo "$HOME"
+echo '$HOME'
+echo "'$HOME'"
+echo "\"$HOME\""
+cat << $EOF
+heredoc> variable
+heredoc> $EOF
+echo $(ls)
+echo `ls`
+echo $(invalid_command)
+echo $(echo 1 | echo 2)
+cat /dev/urandom | head -c 100
+echo -n -n -n Hello
+cd .
+cd -
+export A=1 B=2; env | grep A=1
+export A+=1; echo $A
+unset A B; env | grep A=1
+env -i ./minishell
 
 
-
-
-echo start | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc
-
-
-
-
-→ Output "Hello".
-
----
-
-## 4. **Pipes (`|`)**
-- [ ] Test 4.1: `ls | grep .c` → List files ending with `.c`.
-- [ ] Test 4.2: `echo "hello" | cat | wc -c` → Output `6`.
-
----
-
-## 5. **Environment Variables**
-### 5.1 Expansion
-- [ ] Test 5.1.1: `echo $PATH` → Output PATH variable.
-- [ ] Test 5.1.2: `echo "$USER"` → Output current user (quotes preserve `$`).
-
-### 5.2 Exit Status (`$?`)
-- [ ] Test 5.2.1: `invalid_command` then `echo $?` → Output `127`.
-- [ ] Test 5.2.2: `ls` then `echo $?` → Output `0`.
-
----
-
-## 6. **Signal Handling**
-### 6.1 Interactive Mode
-- [ ] Test 6.1.1: `Ctrl+C` → New prompt on new line.
-- [ ] Test 6.1.2: `Ctrl+D` → Exits shell.
-- [ ] Test 6.1.3: `Ctrl+\` → Does nothing (no crash).
-
----
-
-## 7. **Error Handling**
-### 7.1 Syntax Errors
-- [ ] Test 7.1.1: `echo "unclosed_quote` → Error message.
-- [ ] Test 7.1.2: `ls |` → Error "syntax error near `|`".
-
-### 7.2 Invalid Commands
-- [ ] Test 7.2.1: `invalid_command` → "command not found".
-
----
-
-## 8. **Memory Leaks**
-- [ ] Test 8.1: Run `valgrind --leak-check=full ./minishell` and execute all tests above → No leaks in **your code**.
-
----
-
-## How to Use This File:
-1. Run tests in order.
-2. For heredoc tests, type input as shown.
-3. Use `valgrind` for memory checks (Section 8).
-4. Compare results to bash behavior.
-
-**Notes**:
-- For automated testing, create a script that feeds input to `minishell` (e.g., `echo "ls" | ./minishell`).
-- Test edge cases (e.g., `> file`, `>> file`, mixed pipes/redirections).
+minishell> cat << end > ola
+heredoc> ola
+heredoc> end
+cat: ola: Arquivo ou diretório inexistente
+minishell> cat < Makefile | ls
+cat: ls: Arquivo ou diretório inexistente
+minishell> 

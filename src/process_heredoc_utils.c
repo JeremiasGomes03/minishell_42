@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:54:15 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/25 21:59:19 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/30 20:55:37 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,11 @@ char	*accumulate_content(char *content, char *line)
 
 char	*read_input_line(void)
 {
-	char	*line;	
+	char	*line;
 
 	line = readline("heredoc> ");
 	if (!line)
-	{
-		printf("\n");
-	}
+		return (NULL);
 	return (line);
 }
 

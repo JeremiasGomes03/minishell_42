@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:38:21 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 19:45:28 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:20:04 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ void	free_redirections(t_redir *redir)
 		tmp = redir->next;
 		if (redir->heredoc_data)
 		{
-			free(redir->heredoc_data->delimiter);
+			if (redir->heredoc_data->delimiter)
+				free(redir->heredoc_data->delimiter);
 			free(redir->heredoc_data);
 		}
 		free(redir);

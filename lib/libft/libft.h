@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 14:55:09 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/26 19:19:36 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:37:28 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 
 # include <unistd.h>
 # include <stdlib.h>
-#include <stdio.h>
-#include <stddef.h>
+# include <stdio.h>
+# include <stddef.h>
 
 void			*ft_memset(void *ptr, int value, size_t num);
 void			ft_bzero(void *s, size_t len);
@@ -33,9 +33,9 @@ char			*ft_strdup(const char *src);
 int				ft_toupper(int str);
 int				ft_tolower(int str);
 char			*ft_strnstr(const char *str, const char *to_find, size_t size);
-char            *ft_strchr(char *s, int c);
+char			*ft_strchr(char *s, int c);
 char			*ft_strrchr(char *str, int s);
-size_t          ft_strlen(const char *str);
+size_t			ft_strlen(const char *str);
 int				ft_isdigit(int c);
 int				ft_isalpha(int str);
 int				ft_isalnum(int str);
@@ -55,9 +55,9 @@ char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strtrim(char const *s1, char const *set);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
-char            *ft_strjoin(const char *s1, const char *s2);
+char			*ft_strjoin(const char *s1, const char *s2);
 char			*ft_itoa(int n);
 char			**ft_split(char const *s, char c);
-int             ft_strcmp(const char *s1, const char *s2);
+int				ft_strcmp(const char *s1, const char *s2);
 
 #endif 

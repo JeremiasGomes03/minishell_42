@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:06:00 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 18:57:34 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 17:59:29 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,16 @@ void	setup_child_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+}
+
+void setup_heredoc_signals(void)
+{
+    struct sigaction sa;
+
+    sa.sa_handler = SIG_DFL;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
 }

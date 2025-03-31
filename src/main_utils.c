@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 02:32:18 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 14:31:40 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/30 23:05:42 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	handle_variable_expansion(char *input, t_shell *shell)
 
 	if (input[0] != '$' || ft_strchr(input, ' ') || input[1] == '\0')
 		return (0);
-	expanded = expand_variables(input, shell);
+	expanded = expand_variables(input, NO_QUOTES, shell);
 	if (expanded && *expanded)
 		printf("%s\n", expanded);
 	else

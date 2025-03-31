@@ -6,7 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 17:18:05 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/28 22:38:56 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/30 20:36:20 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,18 @@ int	validate_syntax(t_token *tokens)
 		if (current->type == TOKEN_PIPE)
 		{
 			if (!current->next || current->next->type == TOKEN_PIPE)
-				return (printf("Syntax error near unexpected token `|'\n"), 0);
+				return (ft_putstr_fd("minishell: unexpected token `|'\n",
+						STDERR_FILENO), 0);
 		}
 		else if (is_redirection(current->type))
 		{
 			if (!current->next || current->next->type != TOKEN_WORD)
-			{
-				printf("Syntax error unexpected token `%s'\n", current->value);
-				return (0);
-			}
+				return (ft_putstr_fd("minishell: unexpected token `newline'\n",
+						STDERR_FILENO), 0);
+			if (current->type == TOKEN_HEREDOC && current->next->quote_type
+				!= NO_QUOTES)
+				return (ft_putstr_fd("minishell: prohibited in quotes\n",
+						STDERR_FILENO), 0);
 		}
 		current = current->next;
 	}

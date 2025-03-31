@@ -6,21 +6,7 @@
 /*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:08:12 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 14:30:44 by jeremias         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../include/minishell.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse_handlers.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/26 18:08:12 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/25 22:17:10 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 16:30:27 by jeremias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +20,7 @@ static int	expand_redirectio_fname(char **filename, int quote_type,
 
 	if (quote_type != 2)
 	{
-		expanded = expand_variables(*filename, shell);
+		expanded = expand_variables(*filename, NO_QUOTES, shell);
 		if (!expanded)
 			return (0);
 	}
@@ -60,11 +46,19 @@ static int	handle_heredoc(t_cmd_node *cmd, t_token **token, t_shell *shell)
 	t_heredoc	*heredoc_data;
 	int			fd;
 
+	heredoc_data = NULL;
 	if (!(*token)->next || (*token)->next->type != TOKEN_WORD)
 		return (ft_putstr_fd("minishell: heredoc sem delimitador\n",
 				STDERR_FILENO), 0);
 	heredoc_data = init_heredoc_data((*token)->next);
 	fd = process_heredoc(heredoc_data, shell);
+	if (fd == -2)
+	{
+		free(heredoc_data->delimiter);
+		free(heredoc_data);
+		shell->exit_status = 130;
+		return (0);
+	}
 	free(heredoc_data->delimiter);
 	free(heredoc_data);
 	if (fd == -1)
@@ -133,27 +127,27 @@ static int	handle_redir_out(t_cmd_node *cmd, t_token **tokens,
 	return (1);
 }
 
-int	parse_redirection(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
+int parse_redirection(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
 {
-	t_token			*current;
-	int				success;
-	t_token_type	type;
+    t_token *current = *tokens;
+    t_token_type type;
+    int success = 1;
 
-	current = *tokens;
-	success = 1;
-	while (current && is_redirection(current->type))
-	{
-		type = current->type;
-		if (type == TOKEN_HEREDOC)
-			success = handle_heredoc(cmd, &current, shell);
-		else if (type == TOKEN_REDIR_IN)
-			success = handle_redir_in(cmd, &current, shell);
-		else if (type == TOKEN_REDIR_OUT || type == TOKEN_APPEND)
-			success = handle_redir_out(cmd, &current, type
-					== TOKEN_APPEND, shell);
-		if (!success)
-			break ;
-	}
-	*tokens = current;
-	return (success);
+    if (current && is_redirection(current->type))
+    {
+        type = current->type;
+        if (type == TOKEN_HEREDOC)
+            success = handle_heredoc(cmd, tokens, shell);
+        else if (type == TOKEN_REDIR_IN)
+            success = handle_redir_in(cmd, tokens, shell);
+        else if (type == TOKEN_REDIR_OUT || type == TOKEN_APPEND)
+            success = handle_redir_out(cmd, tokens, (type == TOKEN_APPEND), shell);
+
+        if (!success)
+        {
+            shell->exit_status = 1;
+            return (0);
+        }
+    }
+    return (success);
 }
