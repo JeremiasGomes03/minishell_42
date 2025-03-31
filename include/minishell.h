@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/29 19:48:01 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 18:38:34 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@ void 		export_add_or_replace(t_shell *shell, char *var);
 void		execute_builtin(t_cmd_node *cmd, t_shell *shell);
 int			is_builtin(t_cmd_node *cmd);
 char 		*sanitize_export_arg(char *arg);
+int			ft_exit(char **args);
 
 // Sinais
 void		handle_sigint(int sig);

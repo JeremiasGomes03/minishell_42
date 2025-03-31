@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:45:47 by lamachad          #+#    #+#             */
-/*   Updated: 2025/03/29 20:58:44 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 18:39:22 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,35 @@ void	execute_builtin(t_cmd_node *cmd, t_shell *shell)
 	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		builtin_pwd(cmd);
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		builtin_exit(cmd);
+		builtin_exit(cmd);  // Aqui a função `builtin_exit` é chamada corretamente
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
 		builtin_env(shell);
 }
+
+
+int ft_exit(char **args)
+{
+    int exit_code = 0;
+
+    // Verifica se o usuário forneceu um argumento
+    if (args[1] != NULL)
+    {
+        char *endptr;
+
+        // Tenta converter o argumento para um número inteiro
+        exit_code = strtol(args[1], &endptr, 10);
+
+        // Verifica se a conversão foi bem-sucedida
+        if (*endptr != '\0')  // Se endptr não aponta para o final da string, não é um número válido
+        {
+            // Mensagem de erro usando write (sem fprintf)
+            write(2, "minishell: exit: numeric argument required\n", 41);
+            return 255; // Código de erro por argumento inválido
+        }
+    }
+
+    // Exibe a mensagem de saída
+    write(1, "exit\n", 5);
+    exit(exit_code); // Finaliza o programa com o código de saída
+}
+

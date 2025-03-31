@@ -1,0 +1,29 @@
+situação:
+export jere=adriel
+echo $jere
+
+o retorno é:
+==16115== HEAP SUMMARY:
+==16115==     in use at exit: 244,870 bytes in 429 blocks
+==16115==   total heap usage: 777 allocs, 348 frees, 277,956 bytes allocated
+==16115== 
+==16115== LEAK SUMMARY:
+==16115==    definitely lost: 5,475 bytes in 86 blocks
+==16115==    indirectly lost: 0 bytes in 0 blocks
+==16115==      possibly lost: 0 bytes in 0 blocks
+==16115==    still reachable: 239,395 bytes in 343 blocks
+==16115==         suppressed: 0 bytes in 0 blocks
+==16115== Rerun with --leak-check=full to see details of leaked memory
+==16115== 
+==16115== For lists of detected and suppressed errors, rerun with: -s
+==16115== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+ocorre com qualquer chamada de export, seja com aspas duplas, simples, sem e em apenas uma das variaveis.
+restante das builtins não possui esse erro!
+
+cat < Makefile | ls
+cat << end > jere | ls  
+exitcode das builtins  (facil de arrumar)
+ls | < Makefile        Não muito relevante
+cat | cat | ls
+heredoc com CTRL+C

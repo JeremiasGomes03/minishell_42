@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 01:36:06 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 18:39:01 by lavinia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,20 @@ void	builtin_exit(t_cmd_node *cmd)
 	exit_code = 0;
 	if (cmd->args[1])
 	{
-		exit_code = ft_atoi(cmd->args[1]);
-		if (!ft_isnumeric(cmd->args[1]))
+		char *endptr;
+
+		// Tenta converter o argumento para um número inteiro
+		exit_code = strtol(cmd->args[1], &endptr, 10);
+
+		// Verifica se a conversão foi bem-sucedida
+		if (*endptr != '\0')  // Se endptr não aponta para o final da string, não é um número válido
 		{
-			printf("exit: %s: numeric argument required\n", cmd->args[1]);
+			// Mensagem de erro usando write (sem fprintf)
+			write(2, "minishell: exit: numeric argument required\n", 41);
 			exit_code = 255;
 		}
 	}
-	printf("exit\n");
-	exit(exit_code);
+	// Exibe a mensagem de saída usando write
+	write(1, "exit\n", 5);
+	exit(exit_code); // Finaliza o programa com o código de saída
 }
