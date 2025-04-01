@@ -5,20 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 20:33:45 by jerda-si         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/04/01 01:02:22 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../include/minishell.h"
 
-void	builtin_echo(t_cmd_node *cmd)
+int	builtin_echo(t_cmd_node *cmd)
 {
 	int	i;
 	int	newline;
 
 	if (!cmd || !cmd->args)
-		return ;
+		return (0);
 	i = 1;
 	newline = 1;
 	if (cmd->args[1] && ft_strcmp(cmd->args[1], "-n") == 0)
@@ -35,9 +36,10 @@ void	builtin_echo(t_cmd_node *cmd)
 	}
 	if (newline)
 		ft_putchar_fd('\n', 1);
+	return (0);
 }
 
-void	builtin_cd(t_cmd_node *cmd)
+int	builtin_cd(t_cmd_node *cmd)
 {
 	char	*dir;
 
@@ -46,15 +48,19 @@ void	builtin_cd(t_cmd_node *cmd)
 	else
 		dir = cmd->args[1];
 	if (chdir(dir) == -1)
+	{
 		perror("cd");
+		return (1);
+	}
+	return (0);
 }
 
-void	builtin_export(t_shell *shell, char *var)
+int	builtin_export(t_shell *shell, char *var)
 {
 	char	*cleaned_var;
 
 	if (!shell)
-		return ;
+		return (0);
 	if (!var)
 	{
 		export_list(shell);
@@ -65,9 +71,10 @@ void	builtin_export(t_shell *shell, char *var)
 		export_add_or_replace(shell, cleaned_var);
 		free(cleaned_var);
 	}
+	return (0);
 }
 
-void	builtin_pwd(t_cmd_node *cmd)
+int	builtin_pwd(t_cmd_node *cmd)
 {
 	char	*cwd;
 
@@ -80,22 +87,29 @@ void	builtin_pwd(t_cmd_node *cmd)
 	}
 	else
 		perror("pwd");
+	return (0);
 }
 
-void	builtin_exit(t_cmd_node *cmd)
+int	builtin_exit(t_cmd_node *cmd)
 {
-	int	exit_code;
+	int		exit_code;
+	char	*endptr;
 
 	exit_code = 0;
 	if (cmd->args[1])
 	{
-		exit_code = ft_atoi(cmd->args[1]);
-		if (!ft_isnumeric(cmd->args[1]))
+		exit_code = strtol(cmd->args[1], &endptr, 10);
+		if (*endptr != '\0' || errno == ERANGE)
 		{
-			printf("exit: %s: numeric argument required\n", cmd->args[1]);
-			exit_code = 255;
+			write(2, "minishell: exit: numeric argument required\n", 45);
+			return (255);
+		}
+		if (cmd->args[2])
+		{
+			write(2, "minishell: exit: too many arguments\n", 36);
+			return (1);
 		}
 	}
-	printf("exit\n");
-	exit(exit_code);
+	write(1, "exit\n", 5);
+	exit((unsigned char)exit_code);
 }

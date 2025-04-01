@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/10 18:45:47 by lamachad          #+#    #+#             */
-/*   Updated: 2025/03/31 22:36:30 by jerda-si         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/04/01 01:01:21 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../include/minishell.h"
 
@@ -37,29 +38,49 @@ int	is_env_modifying_builtin(t_cmd_node *cmd)
 	);
 }
 
-void	execute_builtin(t_cmd_node *cmd, t_shell *shell)
+int	execute_builtin(t_cmd_node *cmd, t_shell *shell)
 {
-	int	i;
-
-	i = 0;
 	if (ft_strcmp(cmd->args[0], "echo") == 0)
-		builtin_echo(cmd);
+		return (builtin_echo(cmd));
 	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-		builtin_cd(cmd);
+		return (builtin_cd(cmd));
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
-	{
-		while (cmd->args[i])
-		{
-			builtin_export(shell, cmd->args[i]);
-			i++;
-		}
-	}
-	else if (ft_strcmp(cmd->args[0], "unset") == 0 && cmd->args[1])
-		builtin_unset(shell, cmd->args[1]);
+		return (builtin_export(shell, cmd->args[1]));
+	else if (ft_strcmp(cmd->args[0], "unset") == 0)
+		return (builtin_unset(shell, cmd->args[1]));
 	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		builtin_pwd(cmd);
+		return (builtin_pwd(cmd));
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		builtin_exit(cmd);
+		return (builtin_exit(cmd));
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		builtin_env(shell);
+		return (builtin_env(shell));
+	return (1);
 }
+
+
+// int ft_exit(char **args)
+// {
+//     int exit_code = 0;
+
+//     // Verifica se o usuário forneceu um argumento
+//     if (args[1] != NULL)
+//     {
+//         char *endptr;
+
+//         // Tenta converter o argumento para um número inteiro
+//         exit_code = strtol(args[1], &endptr, 10);
+
+//         // Verifica se a conversão foi bem-sucedida
+//         if (*endptr != '\0')
+//         {
+//             // Mensagem de erro usando write (sem fprintf)
+//             write(2, "minishell: exit: numeric argument required\n", 41);
+//             return 255; // Código de erro por argumento inválido
+//         }
+//     }
+
+//     // Exibe a mensagem de saída
+//     write(1, "exit\n", 5);
+//     exit(exit_code); // Finaliza o programa com o código de saída
+// }
+

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 01:49:08 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/30 15:29:11 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/04/01 05:25:27 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,24 +51,34 @@ void	update_shell_status(t_shell *shell, int status)
 		shell->exit_status = 128 + WTERMSIG(status);
 }
 
-void	wait_for_children(pid_t *pids, int count, t_shell *shell)
+void wait_for_children(pid_t *pids, int count, t_shell *shell, int prev_pipe)
 {
-	int	i;
-	int	status;
-	int	any_child;
+    int i;
+    int status;
 
-	i = 0;
-	any_child = 0;
-	while (i < count)
-	{
-		if (pids[i] > 0)
-		{
-			waitpid(pids[i], &status, 0);
-			update_shell_status(shell, status);
-			any_child = 1;
-		}
-		i++;
-	}
-	if (!any_child)
-		shell->exit_status = 0;
+	(void)prev_pipe;
+    i = 0;
+    while (i < count)
+    {
+        if (pids[i] > 0)
+        {
+            while (waitpid(pids[i], &status, 0) == -1)
+            {
+                if (errno == EINTR)
+                    continue;
+                else
+                    break;
+            }
+            if (WIFSIGNALED(status))
+            {
+                int signum = WTERMSIG(status);
+                if (signum == SIGINT)
+                    write(STDOUT_FILENO, "\n", 1);
+                shell->exit_status = 128 + signum;
+            }
+            else if (WIFEXITED(status))
+                shell->exit_status = WEXITSTATUS(status);
+        }
+        i++;
+    }
 }

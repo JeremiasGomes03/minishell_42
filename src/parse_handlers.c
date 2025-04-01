@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:08:12 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 16:30:27 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/04/01 05:32:40 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static int	handle_redir_in(t_cmd_node *cmd, t_token **tokens, t_shell *shell)
 		free(filename);
 		cmd->in_fd = open("/dev/null", O_RDONLY);
 		*tokens = (*tokens)->next->next;
-		return (1);
+		return (0);
 	}
 	free(filename);
 	cmd->in_fd = fd;

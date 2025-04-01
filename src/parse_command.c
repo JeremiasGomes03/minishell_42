@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_command.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:25:41 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 16:00:18 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/04/01 05:43:06 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,6 @@ static t_cmd_node	*handle_redirection_error(t_token **tokens, t_shell *shell)
 	return (NULL);
 }
 
-// static int	process_redirection(t_cmd_node *cmd,
-// 	t_token **tokens, t_shell *shell)
-// {
-// 	if (is_redirection((*tokens)->type))
-// 	{
-// 		if (!parse_redirection(cmd, tokens, shell))
-// 			return (0);
-// 	}
-// 	return (0);
-// }
-
 t_cmd_node *parse_command(t_token **tokens, t_shell *shell)
 {
     t_cmd_node *cmd;
@@ -58,6 +47,7 @@ t_cmd_node *parse_command(t_token **tokens, t_shell *shell)
             if (!parse_redirection(cmd, tokens, shell))
             {
                 redirection_error = 1;
+                shell->exit_status = 1;
                 break ;
             }
             continue ;

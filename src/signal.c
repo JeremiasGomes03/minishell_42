@@ -6,7 +6,7 @@
 /*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:06:00 by jeremias          #+#    #+#             */
-/*   Updated: 2025/04/01 00:19:03 by jerda-si         ###   ########.fr       */
+/*   Updated: 2025/04/01 05:19:11 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,11 @@ void	setup_signals(void)
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
+
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
 }
+
 
 void	handle_eof(void)
 {

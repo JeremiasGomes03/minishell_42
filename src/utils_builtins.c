@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_builtins.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 17:30:03 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/29 20:33:13 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:57:42 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void export_list(t_shell *shell)
 	int		key_len;
 
 	if (!shell || !shell->envp)
-		return;
+		return ;
 
 	i = 0;
 	while (shell->envp[i])
@@ -46,7 +46,7 @@ void export_list(t_shell *shell)
 	}
 }
 
-void export_add_or_replace(t_shell *shell, char *var)
+int export_add_or_replace(t_shell *shell, char *var)
 {
 	int		i;
 	int		j;
@@ -54,10 +54,10 @@ void export_add_or_replace(t_shell *shell, char *var)
 	char	**new_envp;
 
 	if (!shell || !var)
-		return;
+		return (0);
 	equals = ft_strchr(var, '=');
 	if (!equals || equals == var)
-		return;
+		return (0);
 	i = 0;
 	while (shell->envp[i])
 	{
@@ -66,13 +66,13 @@ void export_add_or_replace(t_shell *shell, char *var)
 		{
 			free(shell->envp[i]);
 			shell->envp[i] = ft_strdup(var);
-			return;
+			return (0);
 		}
 		i++;
 	}
 	new_envp = malloc(sizeof(char *) * (i + 2));
 	if (!new_envp)
-		return;
+		return (0);
 	j = 0;
 	while (j < i)
 	{
@@ -83,22 +83,23 @@ void export_add_or_replace(t_shell *shell, char *var)
 	new_envp[j] = NULL;
 	free(shell->envp);
 	shell->envp = new_envp;
+	return (0);
 }
 
-char *sanitize_export_arg(char *arg)
+char	*sanitize_export_arg(char *arg)
 {
-	int len;
+	int	len;
 
 	if (!arg)
-		return NULL;
+		return (NULL);
 	len = ft_strlen(arg);
 	if (arg[0] == '"' && arg[len - 1] == '"')
 	{
-		return ft_substr(arg, 1, len - 2);
+		return (ft_substr(arg, 1, len - 2));
 	}
 	if (arg[0] == '\'' && arg[len - 1] == '\'')
 	{
-		return ft_substr(arg, 1, len - 2);
+		return (ft_substr(arg, 1, len - 2));
 	}
-	return ft_strdup(arg);
+	return (ft_strdup(arg));
 }
