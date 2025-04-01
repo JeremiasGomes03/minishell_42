@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 19:30:48 by jerda-si          #+#    #+#             */
-/*   Updated: 2025/03/31 18:39:14 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:56:45 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ char        *ft_strjoin_char(char *s1, char c);
 char        *get_envp(t_shell *shell, char *cmd);
 int			ft_findchr(char *str, char c);
 // Utils2
-void		cleanup_temp_file(char *temp_file);
+void		cleanup_temp_file(char *temp_file, int fd);
 void		write_content_to_temp_file(int fd, char *content);
 int			open_temp_file_for_reading(char *temp_file);
 // Utils
