@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:25 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 20:47:48 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:55:26 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,24 +38,31 @@ static int	setup_child_process(t_cmd_node *cmd,
 	return (1);
 }
 
-static int	fork_and_execute(t_cmd_node *cmd, int prev_pipe_in, \
-int pipefd[2], t_shell *shell)
+static int	fork_and_execute(t_cmd_node *cmd, int prev_pipe_in,
+	int pipefd[2], t_shell *shell)
 {
 	pid_t	pid;
 	char	*path;
+	int		status_pipe[2];
+	int		exit_status;
 
 	if (is_env_modifying_builtin(cmd))
 		return (handle_parent_builtin(cmd, shell));
+	if (pipe(status_pipe) == -1)
+		return (perror("minishell: pipe"), -1);
 	pid = fork();
 	if (pid == -1)
 		return (perror("minishell: fork"), -1);
 	if (pid == 0)
 	{
+		close(status_pipe[0]);
 		setup_child_process(cmd, prev_pipe_in, pipefd);
 		if (is_builtin(cmd))
 		{
-			execute_builtin(cmd, shell);
-			exit(shell->exit_status);
+			exit_status = execute_builtin(cmd, shell);
+			write(status_pipe[1], &exit_status, sizeof(int));
+			close(status_pipe[1]);
+			exit(exit_status);
 		}
 		path = get_absolute_path(cmd->args[0], shell);
 		if (!path)
@@ -65,6 +72,9 @@ int pipefd[2], t_shell *shell)
 		free(path);
 		exit(shell->exit_status);
 	}
+	close(status_pipe[1]);
+	read(status_pipe[0], &shell->exit_status, sizeof(int));
+	close(status_pipe[0]);
 	return (pid);
 }
 

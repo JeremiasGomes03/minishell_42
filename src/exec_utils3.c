@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:32:45 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 19:47:51 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:33:56 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	handle_parent_builtin(t_cmd_node *cmd, t_shell *shell)
 		return (close_fds(saved_stdin, saved_stdout), -1);
 	if (cmd->out_fd != STDOUT_FILENO && dup2(cmd->out_fd, STDOUT_FILENO) == -1)
 		return (close_fds(saved_stdin, saved_stdout), -1);
-	execute_builtin(cmd, shell);
+	shell->exit_status = execute_builtin(cmd, shell);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1
 		|| dup2(saved_stdout, STDOUT_FILENO) == -1)
 		return (close_fds(saved_stdin, saved_stdout), -1);

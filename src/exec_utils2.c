@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 01:49:08 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/29 19:44:03 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:42:46 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,6 @@ void	wait_for_children(pid_t *pids, int count, t_shell *shell)
 		}
 		i++;
 	}
-	if (!any_child)
-		shell->exit_status = 0;
+	// if (!any_child)
+	// 	shell->exit_status = 0;
 }

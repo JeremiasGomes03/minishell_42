@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lavinia <lavinia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 22:21:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 18:39:01 by lavinia          ###   ########.fr       */
+/*   Updated: 2025/03/31 23:49:53 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	builtin_echo(t_cmd_node *cmd)
+int	builtin_echo(t_cmd_node *cmd)
 {
 	int	i;
 	int	newline;
 
 	if (!cmd || !cmd->args)
-		return ;
+		return (0);
 	i = 1;
 	newline = 1;
 	if (cmd->args[1] && ft_strcmp(cmd->args[1], "-n") == 0)
@@ -35,9 +35,10 @@ void	builtin_echo(t_cmd_node *cmd)
 	}
 	if (newline)
 		ft_putchar_fd('\n', 1);
+	return (0);
 }
 
-void	builtin_cd(t_cmd_node *cmd)
+int	builtin_cd(t_cmd_node *cmd)
 {
 	char	*dir;
 
@@ -46,15 +47,19 @@ void	builtin_cd(t_cmd_node *cmd)
 	else
 		dir = cmd->args[1];
 	if (chdir(dir) == -1)
+	{
 		perror("cd");
+		return (1);
+	}
+	return (0);
 }
 
-void	builtin_export(t_shell *shell, char *var)
+int	builtin_export(t_shell *shell, char *var)
 {
 	char	*cleaned_var;
 
 	if (!shell)
-		return ;
+		return (0);
 	if (!var)
 	{
 		export_list(shell);
@@ -65,9 +70,10 @@ void	builtin_export(t_shell *shell, char *var)
 		export_add_or_replace(shell, cleaned_var);
 		free(cleaned_var);
 	}
+	return (0);
 }
 
-void	builtin_pwd(t_cmd_node *cmd)
+int	builtin_pwd(t_cmd_node *cmd)
 {
 	char	*cwd;
 
@@ -80,29 +86,29 @@ void	builtin_pwd(t_cmd_node *cmd)
 	}
 	else
 		perror("pwd");
+	return (0);
 }
 
-void	builtin_exit(t_cmd_node *cmd)
+int	builtin_exit(t_cmd_node *cmd)
 {
-	int	exit_code;
+	int		exit_code;
+	char	*endptr;
 
 	exit_code = 0;
 	if (cmd->args[1])
 	{
-		char *endptr;
-
-		// Tenta converter o argumento para um número inteiro
 		exit_code = strtol(cmd->args[1], &endptr, 10);
-
-		// Verifica se a conversão foi bem-sucedida
-		if (*endptr != '\0')  // Se endptr não aponta para o final da string, não é um número válido
+		if (*endptr != '\0' || errno == ERANGE)
 		{
-			// Mensagem de erro usando write (sem fprintf)
-			write(2, "minishell: exit: numeric argument required\n", 41);
-			exit_code = 255;
+			write(2, "minishell: exit: numeric argument required\n", 45);
+			return (255);
+		}
+		if (cmd->args[2])
+		{
+			write(2, "minishell: exit: too many arguments\n", 36);
+			return (1);
 		}
 	}
-	// Exibe a mensagem de saída usando write
 	write(1, "exit\n", 5);
-	exit(exit_code); // Finaliza o programa com o código de saída
+	exit((unsigned char)exit_code);
 }

@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_two.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lamachad <lamachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 20:55:24 by lavinia           #+#    #+#             */
-/*   Updated: 2025/03/27 20:53:52 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:59:18 by lamachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 
-void	builtin_env(t_shell *shell)
+int	builtin_env(t_shell *shell)
 {
 	int	i;
 
 	if (!shell || !shell->envp)
-		return ;
+		return (0);
 
 	i = 0;
 	while (shell->envp[i])
@@ -26,6 +26,7 @@ void	builtin_env(t_shell *shell)
 		printf("%s\n", shell->envp[i]);
 		i++;
 	}
+	return (0);
 }
 
 static void	free_envp_array(char **envp)
@@ -89,19 +90,20 @@ static char	**create_new_envp(char **old_envp, int skip_index)
 	return (new_envp);
 }
 
-void	builtin_unset(t_shell *shell, char *var)
+int	builtin_unset(t_shell *shell, char *var)
 {
 	int		index;
 	char	**new_envp;
 
 	if (!shell || !var)
-		return ;
+		return (0);
 	index = count_env_vars(shell->envp, var);
 	if (index == -1)
-		return ;
+		return (0);
 	new_envp = create_new_envp(shell->envp, index);
 	if (!new_envp)
-		return ;
+		return (0);
 	free_envp_array(shell->envp);
 	shell->envp = new_envp;
+	return (0;
 }
