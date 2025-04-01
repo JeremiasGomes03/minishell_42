@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_heredoc_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:54:15 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/30 20:55:37 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:55:10 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,14 @@ char	*read_input_line(void)
 	return (line);
 }
 
-static char	get_random_char(void)
+static char get_random_char(void)
 {
-	const char				*charset;
-	static unsigned long	counter;
-	size_t					charset_len;
-	size_t					index;
-
-	counter = 0;
-	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	charset_len = 62;
-	counter++;
-	index = counter % charset_len;
-	return (charset[index]);
+    const char *charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    static unsigned long counter = 0;
+    size_t charset_len = 62;
+    
+    counter++;
+    return charset[counter % charset_len];
 }
 
 static void	generate_temp_name(char *template)

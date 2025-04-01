@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:06:00 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 17:59:29 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:19:03 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,24 @@ void	setup_child_signals(void)
 	signal(SIGQUIT, SIG_DFL);
 }
 
-void setup_heredoc_signals(void)
+void	set_signal_handler(void (*handler)(int))
 {
-    struct sigaction sa;
+	struct sigaction	sa;
 
-    sa.sa_handler = SIG_DFL;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sigaction(SIGINT, &sa, NULL);
-    sa.sa_handler = SIG_IGN;
-    sigaction(SIGQUIT, &sa, NULL);
+	sa.sa_handler = handler;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+}
+
+void sigint_heredoc_handler(int sig)
+{
+	(void)sig;
+	write(STDERR_FILENO, "\n", 1);
+	exit(130);
+}
+
+void	setup_heredoc_signals(void)
+{
+	set_signal_handler(sigint_heredoc_handler);
 }

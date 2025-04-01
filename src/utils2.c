@@ -3,24 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 21:26:44 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 01:00:26 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:55:25 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	cleanup_temp_file(char *temp_file, int fd)
+void cleanup_temp_file(char *temp_file, int fd)
 {
-	if (fd != -1)
-		close(fd);
-	if (temp_file)
-	{
-		unlink(temp_file);
-		free(temp_file);
-	}
+    if (fd >= 0)
+        close(fd);
+    if (temp_file)
+        unlink(temp_file);
 }
 
 void	write_content_to_temp_file(int fd, char *content)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeremias <jeremias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jerda-si <jerda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:50:46 by jeremias          #+#    #+#             */
-/*   Updated: 2025/03/31 18:39:01 by jeremias         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:06:02 by jerda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,39 +40,44 @@ static int	handle_heredoc_child(int fd, t_heredoc *hd, t_shell *shell)
 static int handle_heredoc_parent(pid_t pid, char *temp_file, t_shell *shell)
 {
     int status;
-    int fd;
-
-    signal(SIGINT, SIG_IGN); // Bloqueia SIGINT no pai durante o wait
-    waitpid(pid, &status, 0); // Espera o filho terminar
-    signal(SIGINT, SIG_DFL); // Restaura comportamento padrão
-
-    // Verifica se o filho foi interrompido por SIGINT
+    int fd = -1;
+    
+    waitpid(pid, &status, 0);
     if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
     {
-        cleanup_temp_file(temp_file); // Remove o arquivo temporário
-        ft_putstr_fd("\n", STDERR_FILENO); // Mantém o prompt alinhado
-        shell->exit_status = 130; // Código 130 = SIGINT
-        return (-2); // Retorno especial para interrupção
+        shell->exit_status = 130;
+        ft_putstr_fd("\n", STDERR_FILENO);
+        return (-2);
     }
-
-    fd = open_temp_file_for_reading(temp_file);
-    return (fd); // Retorna o fd ou -1 em caso de erro
+    fd = open(temp_file, O_RDONLY);
+    if (fd == -1)
+    {
+        perror("open");
+        return (-1);
+    }
+    return (fd);
 }
 
 int process_heredoc(t_heredoc *heredoc_data, t_shell *shell)
 {
     pid_t pid;
     char *temp_file;
-    int fd;
+    int fd = -1;
+    void (*old_handler)(int);
 
     temp_file = create_temp_file();
     if (!temp_file)
         return (-1);
-
+    old_handler = signal(SIGINT, SIG_IGN);
     pid = fork();
-    if (pid == 0) // Processo filho
+    if (pid == -1) {
+        signal(SIGINT, old_handler);
+        free(temp_file);
+        return (-1);
+    }
+    if (pid == 0)
     {
-        setup_heredoc_signals(); // SIGINT agora termina o processo
+        setup_heredoc_signals();
         fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if (fd == -1)
         {
@@ -82,15 +87,19 @@ int process_heredoc(t_heredoc *heredoc_data, t_shell *shell)
         }
         if (handle_heredoc_child(fd, heredoc_data, shell) != 0)
             exit(EXIT_FAILURE);
-        close(fd);
-        free(temp_file);
         exit(EXIT_SUCCESS);
     }
-    else // Processo pai
+    else
     {
         fd = handle_heredoc_parent(pid, temp_file, shell);
-        if (fd == -2) // Caso de interrupção por SIGINT
-            cleanup_temp_file(temp_file);
+        signal(SIGINT, old_handler);
+        if (fd == -2) {
+            shell->exit_status = 130;
+            unlink(temp_file);
+            free(temp_file);
+            rl_on_new_line();
+            return (-1);
+        }
         free(temp_file);
         return (fd);
     }
@@ -116,33 +125,4 @@ char	*create_temp_file(void)
 	}
 	close(fd);
 	return (temp_file);
-}
-
-char	*process_input_heredoc(t_heredoc *heredoc_data, t_shell *shell)
-{
-	char	*line;
-	char	*content;
-	char	*expanded_line;
-
-	content = ft_strdup("");
-	while (1)
-	{
-		line = read_input_line();
-		if (!line || ft_strcmp(line, heredoc_data->delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (heredoc_data->quote_type == NO_QUOTES)
-		{
-			expanded_line = expand_variables(line, NO_QUOTES, shell);
-			if (!expanded_line)
-				return (ft_strdup(""));
-			free(line);
-			line = expanded_line;
-		}
-		content = accumulate_content(content, line);
-		free(line);
-	}
-	return (content);
 }
